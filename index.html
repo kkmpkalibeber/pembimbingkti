@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Pencarian Pembimbing & Penguji Siswa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #FFD700;
+        }
+        
+        .data-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .data-info h2 {
+            color: #182848;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+        
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 150px;
+            flex: 1;
+        }
+        
+        .stat-box h3 {
+            font-size: 2.5rem;
+            color: #182848;
+            margin-bottom: 5px;
+        }
+        
+        .stat-box p {
+            color: #444;
+            font-weight: 600;
+        }
+        
+        .search-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-section h2 {
+            color: #182848;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .search-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .search-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+            }
+            
+            .stat-box {
+                min-width: 100%;
+            }
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .control-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #444;
+        }
+        
+        .select-wrapper, .input-wrapper {
+            position: relative;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border 0.3s ease;
+        }
+        
+        select:focus, input:focus {
+            border-color: #4b6cb7;
+            outline: none;
+        }
+        
+        .select-wrapper i, .input-wrapper i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+        
+        .search-button {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .search-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(75, 108, 183, 0.3);
+        }
+        
+        .results-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .results-section h2 {
+            color: #182848;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .results-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .results-count {
+            font-weight: 600;
+            color: #4b6cb7;
+            font-size: 1.1rem;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
+        }
+        
+        .results-table th {
+            background-color: #f0f5ff;
+            color: #182848;
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .results-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .results-table tr:hover {
+            background-color: #f9fbff;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+            font-size: 1.2rem;
+        }
+        
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .pembimbing-badge {
+            background-color: #e1f0ff;
+            color: #0066cc;
+        }
+        
+        .penguji-badge {
+            background-color: #e6f7e9;
+            color: #008a1e;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #666;
+            border-top: 1px solid #ddd;
+        }
+        
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .loader i {
+            font-size: 3rem;
+            color: #4b6cb7;
+            margin-bottom: 15px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            font-weight: 600;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .page-button {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            background-color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .page-button:hover {
+            background-color: #f0f5ff;
+        }
+        
+        .page-button.active {
+            background-color: #4b6cb7;
+            color: white;
+            border-color: #4b6cb7;
+        }
+        
+        .page-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .export-button {
+            background: linear-gradient(to right, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .export-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(40, 167, 69, 0.3);
+        }
+        
+        .note-box {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .note-box i {
+            color: #ff9800;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-search"></i>
+            </div>
+            <h1>Aplikasi Pencarian Pembimbing & Penguji Siswa</h1>
+            <p>Cari data siswa berdasarkan nama pembimbing atau penguji</p>
+        </header>
+        
+        <div class="alert alert-success" id="successAlert">
+            <i class="fas fa-check-circle"></i> Data berhasil dimuat! <span id="dataCount">419</span> data siswa tersedia. Data pembimbing dan penguji yang kosong diisi otomatis dari baris sebelumnya.
+        </div>
+        
+        <section class="data-info">
+            <h2><i class="fas fa-database"></i> Data yang Tersedia</h2>
+            <div class="stats">
+                <div class="stat-box">
+                    <h3 id="studentCount">419</h3>
+                    <p>Siswa</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="mentorCount">0</h3>
+                    <p>Pembimbing</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="examinerCount">0</h3>
+                    <p>Penguji</p>
+                </div>
+            </div>
+            <div class="note-box">
+                <i class="fas fa-info-circle"></i>
+                <strong>Catatan Penting:</strong> Data pembimbing dan penguji yang kosong diisi secara otomatis dengan nilai dari baris sebelumnya. Sistem ini memastikan setiap siswa memiliki data pembimbing dan penguji yang lengkap.
+            </div>
+        </section>
+        
+        <section class="search-section">
+            <h2><i class="fas fa-search"></i> Pencarian Data</h2>
+            <div class="search-controls">
+                <div class="control-group">
+                    <label for="category">Kategori</label>
+                    <div class="select-wrapper">
+                        <select id="category">
+                            <option value="pembimbing">Pembimbing</option>
+                            <option value="penguji">Penguji</option>
+                            <option value="keduanya">Keduanya (Pembimbing & Penguji)</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="name">Nama</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="name" placeholder="Masukkan nama pembimbing/penguji">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="searchType">Tipe Pencarian</label>
+                    <div class="select-wrapper">
+                        <select id="searchType">
+                            <option value="exact">Tepat</option>
+                            <option value="contains" selected>Mengandung</option>
+                            <option value="startsWith">Dimulai dengan</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="searchButton" class="search-button">
+                <i class="fas fa-search"></i> Cari Data
+            </button>
+        </section>
+        
+        <div class="loader" id="loader">
+            <i class="fas fa-spinner"></i>
+            <p>Memproses data...</p>
+        </div>
+        
+        <section class="results-section" id="resultsSection">
+            <h2><i class="fas fa-list-alt"></i> Hasil Pencarian</h2>
+            <div class="results-info">
+                <div class="results-count" id="resultsCount">0 hasil ditemukan</div>
+                <div>
+                    <span id="searchSummary"></span>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table class="results-table" id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th width="5%">NO.</th>
+                            <th width="30%">NAMA SISWA</th>
+                            <th width="30%">PEMBIMBING</th>
+                            <th width="30%">PENGUJI</th>
+                            <th width="5%">PERAN</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody">
+                        <!-- Hasil pencarian akan ditampilkan di sini -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination" id="pagination">
+                <!-- Pagination akan ditampilkan di sini -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="exportButton" class="export-button">
+                    <i class="fas fa-download"></i> Ekspor ke Excel
+                </button>
+            </div>
+            
+            <div class="no-results" id="noResults">
+                <i class="fas fa-search"></i>
+                <p>Tidak ada data yang ditemukan. Coba gunakan kata kunci lain.</p>
+            </div>
+        </section>
+        
+        <div class="footer">
+            <p>Aplikasi Pencarian Data Siswa &copy; 2023 - Dibuat dengan <i class="fas fa-heart" style="color: #e74c3c;"></i></p>
+        </div>
+    </div>
+
+    <script>
+        // Data mentah dari file Excel
+        const rawData = [
+            { no: 1, nama: "AGHNIA RAISA NAZAFARIN", pembimbing: "EKO ERIYANTO, S. Pd.", penguji: "LUKMANUL HAKIM, S.Ag." },
+            { no: 2, nama: "AHMAD MUHAFID", pembimbing: "AFIT  WANUGIYANTI WANTI,  S. Pd., Gr.", penguji: "" },
+            { no: 3, nama: "AHMAD TSAQIB TAQIYUDIN", pembimbing: "FARAH MA'RIFY, S.Sos. I.", penguji: "" },
+            { no: 4, nama: "Annida Khoirunnisa Widyaningrum", pembimbing: "CITA LUSTY ARDLIANA, S.Pd. Gr.", penguji: "" },
+            { no: 5, nama: "ASTRID YATUS SHOLIHAH", pembimbing: "SULIMAH, S.Pd.", penguji: "" },
+            { no: 6, nama: "AZZAHRA PUTRI CAHYADI", pembimbing: "MUHAMMAD ADI WINATA, S. Kom.", penguji: "" },
+            { no: 7, nama: "ELREISHA DIAH MUHARRA", pembimbing: "PALUPI INDAH NUGRAHENI, S.Pd", penguji: "" },
+            { no: 8, nama: "FAT MASHUDIN", pembimbing: "CHRISTINA, S.Pd.", penguji: "SITI NGAISAH, S.Ag." },
+            { no: 9, nama: "Hamas Galih Alisqi", pembimbing: "", penguji: "" },
+            { no: 10, nama: "Hasna Firda Nazifa", pembimbing: "", penguji: "" },
+            { no: 11, nama: "KAFFA NUR MAZIDAH", pembimbing: "", penguji: "" },
+            { no: 12, nama: "KARISA PUTRI AULYA", pembimbing: "", penguji: "" },
+            { no: 13, nama: "KHILYATUN NAWA AL ISLAH", pembimbing: "", penguji: "" },
+            { no: 14, nama: "KHULWAH GHIFARUL MANNA", pembimbing: "", penguji: "" },
+            { no: 15, nama: "MAYSA TSUROYYA", pembimbing: "YULTHOF ARIF, S.Sy., M.Ag.,", penguji: "M. FAISHOL KHASAN, S. Pd.Gr." },
+            { no: 16, nama: "MEILIANA BAHAR", pembimbing: "", penguji: "" },
+            { no: 17, nama: "MUHAMMAD SYIFAUDDIN", pembimbing: "", penguji: "" },
+            { no: 18, nama: "MUHMMAD NUR ALIM", pembimbing: "", penguji: "" },
+            { no: 19, nama: "NADIA KUMARA", pembimbing: "", penguji: "" },
+            { no: 20, nama: "NAFEEZA FADHELA RAMADHANI", pembimbing: "", penguji: "" },
+            { no: 21, nama: "NAILI ELSA SYARIFA", pembimbing: "", penguji: "" },
+            { no: 22, nama: "NAJMA NUR NAHDIANA", pembimbing: "RIDLWAN, S.Pd., M.Pd.,Gr.", penguji: "PAWIT AL -SUHARTINI,S.Pd." },
+            { no: 23, nama: "NISA NUR ROHMAH", pembimbing: "", penguji: "" },
+            { no: 24, nama: "NURITA AKHSANULKHUSNA", pembimbing: "", penguji: "" },
+            { no: 25, nama: "QISMIKA AULIA ABDILLAH", pembimbing: "", penguji: "" },
+            { no: 26, nama: "RAHAYU FASOHAH", pembimbing: "", penguji: "" },
+            { no: 27, nama: "RASHIFATUL CHUSNA", pembimbing: "", penguji: "" },
+            { no: 28, nama: "RIANA NUR LATIFAH", pembimbing: "", penguji: "" },
+            { no: 29, nama: "SAFA'ATUL IKHSANAT", pembimbing: "NUROFIQ, S.Ag.", penguji: "Rr. GUN HARNANI, S. Pd." },
+            { no: 30, nama: "SYAFIRA NUR HIDAYAH", pembimbing: "", penguji: "" },
+            { no: 31, nama: "SYIFA' AJWAH AL-MADANI", pembimbing: "", penguji: "" },
+            { no: 32, nama: "SYIFAUL IKRIMATUSSOLIKHAH", pembimbing: "", penguji: "" },
+            { no: 33, nama: "trisa Adinda Putri S", pembimbing: "", penguji: "" },
+            { no: 34, nama: "TSALTSA INDANANISA TAUFIKURRAHMADANI", pembimbing: "", penguji: "" },
+            { no: 35, nama: "ZAHRA MAHDIYA EILIYAH", pembimbing: "", penguji: "" },
+            { no: 36, nama: "INTAN NUR AINI", pembimbing: "SITI KHALIMAH, S.Pd. Mat.", penguji: "SUHARTATIK, S.Pd." },
+            { no: 37, nama: "ADINDA RAISYA AN NAHWA", pembimbing: "", penguji: "" },
+            { no: 38, nama: "AHMAD STAQIF ZHALIFUNNAS", pembimbing: "", penguji: "" },
+            { no: 39, nama: "AISYAH KHUROTUL JANNAH", pembimbing: "", penguji: "" },
+            { no: 40, nama: "ALUNA FAUZIAH RAHMAH", pembimbing: "", penguji: "" },
+            { no: 41, nama: "Auryn Zabrina Azzahra", pembimbing: "", penguji: "" },
+            { no: 42, nama: "BELA KHARISMA RAHMA DEWIANI", pembimbing: "", penguji: "" },
+            { no: 43, nama: "CINTA NABILA SILVIYANA AKHMAD", pembimbing: "LUKMANUL HAKIM, S.Ag.", penguji: "HALIMAH, S.Sos." },
+            { no: 44, nama: "DHAIFA ALYA HIDAYAH", pembimbing: "", penguji: "" },
+            { no: 45, nama: "DWI CAHAYA SHOLIHATI SUHENDAR", pembimbing: "", penguji: "" },
+            { no: 46, nama: "FAIZAN SURONO", pembimbing: "", penguji: "" },
+            { no: 47, nama: "FARAH ARISTAWATI", pembimbing: "", penguji: "" },
+            { no: 48, nama: "FIKA RUHANDINI", pembimbing: "", penguji: "" },
+            { no: 49, nama: "Firda Nuur Azkiya", pembimbing: "", penguji: "" },
+            { no: 50, nama: "Janeeta Annaura Tabila", pembimbing: "SITI NGAISAH, S.Ag.", penguji: "DENNY RACHMAYATI, S.Pd." },
+            { no: 51, nama: "JIHAN YURFAUL ULUWI", pembimbing: "", penguji: "" },
+            { no: 52, nama: "KHAZIMATUN FARKHANATUL HANA", pembimbing: "", penguji: "" },
+            { no: 53, nama: "LIN TAZKIYYA FUADAH", pembimbing: "", penguji: "" },
+            { no: 54, nama: "maulana sholehuddin", pembimbing: "", penguji: "" },
+            { no: 55, nama: "Mutia Qurrota A'yun", pembimbing: "", penguji: "" },
+            { no: 56, nama: "NABILA AFIFATUZ ZAHRA", pembimbing: "", penguji: "" },
+            { no: 57, nama: "NAFI'AH LAYLATUL MAGHFIRA", pembimbing: "M. FAISHOL KHASAN, S. Pd.Gr.", penguji: "NIKEN PRAMULATSIH, S.S., M.Hum." },
+            { no: 58, nama: "NAILA NAJWA", pembimbing: "", penguji: "" },
+            { no: 59, nama: "NAYLA SHABRINA", pembimbing: "", penguji: "" },
+            { no: 60, nama: "NOFAYLA AYU NANDIRA", pembimbing: "", penguji: "" },
+            { no: 61, nama: "NUR ALIYATUN NISA", pembimbing: "", penguji: "" },
+            { no: 62, nama: "PUTRI MARVA LAELIKA", pembimbing: "", penguji: "" },
+            { no: 63, nama: "RIF'AT ANJA ULUF MA'LUFAH", pembimbing: "", penguji: "" },
+            { no: 64, nama: "RISMA WULAN DARI", pembimbing: "PAWIT AL -SUHARTINI,S.Pd.", penguji: "MUSTAMI'IN, S.S." },
+            { no: 65, nama: "SYAFA RRAHMATIKA", pembimbing: "", penguji: "" },
+            { no: 66, nama: "SYALWA HAYYIN IZZA DUANDANI", pembimbing: "", penguji: "" },
+            { no: 67, nama: "ulfa sharifatul azizah", pembimbing: "", penguji: "" },
+            { no: 68, nama: "ULIMAZ THYRA", pembimbing: "", penguji: "" },
+            { no: 69, nama: "ulya siana", pembimbing: "", penguji: "" },
+            { no: 70, nama: "ZIYAN KAMIL MUSHOFFA", pembimbing: "", penguji: "" },
+            { no: 71, nama: "ADINDA ZAHRA LUTFIANJANI", pembimbing: "Rr. GUN HARNANI, S. Pd.", penguji: "MOHAMAD FATKHUROHMAN, S.Pd.T." },
+            { no: 72, nama: "ALDAN MAULANA", pembimbing: "", penguji: "" },
+            { no: 73, nama: "ANANG RESTU RAHAYU", pembimbing: "", penguji: "" },
+            { no: 74, nama: "ANGGUN AULIA MAWARDI", pembimbing: "", penguji: "" },
+            { no: 75, nama: "AULIA ZULFA RAMADHANI", pembimbing: "", penguji: "" },
+            { no: 76, nama: "elvy zahra anisa", pembimbing: "", penguji: "" },
+            { no: 77, nama: "FATHIN FARSHANI", pembimbing: "", penguji: "" },
+            { no: 78, nama: "FEBRIANA WAHDINY HIDAYAH", pembimbing: "SUHARTATIK, S.Pd.", penguji: "EKO ERIYANTO, S. Pd." },
+            { no: 79, nama: "FIKHRIS SYAKINA AMRI", pembimbing: "", penguji: "AFIT  WANUGIYANTI WANTI,  S. Pd., Gr." },
+            { no: 80, nama: "FITTAHANI AISYA WA MAULIDA", pembimbing: "", penguji: "FARAH MA'RIFY, S.Sos. I." },
+            { no: 81, nama: "HADYAN MURSYIDAN ASSEGHAF", pembimbing: "", penguji: "CITA LUSTY ARDLIANA, S.Pd. Gr." },
+            { no: 82, nama: "ilyas majdun ghinan", pembimbing: "", penguji: "SULIMAH, S.Pd." },
+            { no: 83, nama: "Indy sahlah", pembimbing: "", penguji: "MUHAMMAD ADI WINATA, S. Kom." },
+            { no: 84, nama: "INTAN NUR AINI", pembimbing: "", penguji: "PALUPI INDAH NUGRAHENI, S.Pd" },
+            { no: 85, nama: "IVA MIFTAKHUL ULUM", pembimbing: "HALIMAH, S.Sos.", penguji: "CHRISTINA, S.Pd." },
+            { no: 86, nama: "kusuma diana hapsari", pembimbing: "", penguji: "" },
+            { no: 87, nama: "LANGIT RAMADHANI SUTRISNO PUTRI", pembimbing: "", penguji: "" },
+            { no: 88, nama: "LUBNA AYUMNA", pembimbing: "", penguji: "" },
+            { no: 89, nama: "LUHUR GINANJAR PRAYOGA", pembimbing: "", penguji: "" },
+            { no: 90, nama: "M. Hafidz Sa'bani", pembimbing: "", penguji: "" },
+            { no: 91, nama: "MARCEHLIA NOVITA SARI", pembimbing: "", penguji: "" },
+            { no: 92, nama: "MUHAMMAD FAIZ SETIAWAN", pembimbing: "DENNY RACHMAYATI, S.Pd.", penguji: "YULTHOF ARIF, S.Sy., M.Ag.," },
+            { no: 93, nama: "MUHAMMAD RAFID ALMUJALID", pembimbing: "", penguji: "" },
+            { no: 94, nama: "Naura Auliyaa Malika", pembimbing: "", penguji: "" },
+            { no: 95, nama: "oktavia saputri", pembimbing: "", penguji: "" },
+            { no: 96, nama: "RAHMA DHANY", pembimbing: "", penguji: "" },
+            { no: 97, nama: "SAD SILVIANI AMANAH", pembimbing: "", penguji: "" },
+            { no: 98, nama: "SALASA KHUSNA MUNFARIDA", pembimbing: "", penguji: "" },
+            { no: 99, nama: "salma alfiatun niswa", pembimbing: "NIKEN PRAMULATSIH, S.S., M.Hum.", penguji: "RIDLWAN, S.Pd., M.Pd.,Gr." },
+            { no: 100, nama: "WAFA YUNA NURAINI", pembimbing: "", penguji: "" },
+            { no: 101, nama: "WULAN MAULIDA ZALFA", pembimbing: "", penguji: "" },
+            { no: 102, nama: "ZAKKYA MAULIN NISSA", pembimbing: "", penguji: "" },
+            { no: 103, nama: "ZENI SYIFA NABILA", pembimbing: "", penguji: "" },
+            { no: 104, nama: "ZULFA TSAUQY ILA IZZATILLAH", pembimbing: "", penguji: "" },
+            { no: 105, nama: "CHAIRIKA WARDA", pembimbing: "", penguji: "" },
+            { no: 106, nama: "AKIFA NAILA ROSYDIANA", pembimbing: "MUSTAMI'IN, S.S.", penguji: "NUROFIQ, S.Ag." },
+            { no: 107, nama: "ALIF TANTRA PRATUNGGA", pembimbing: "", penguji: "" },
+            { no: 108, nama: "Alika Sula Albertina Felita", pembimbing: "", penguji: "" },
+            { no: 109, nama: "ANEIRA ARKANEISYA KARIM", pembimbing: "", penguji: "" },
+            { no: 110, nama: "ARKAN TSAQIB", pembimbing: "", penguji: "" },
+            { no: 111, nama: "AUFIA SABILA RAHMA", pembimbing: "", penguji: "" },
+            { no: 112, nama: "azam almas salsabil jundi", pembimbing: "", penguji: "" },
+            { no: 113, nama: "BUNGA ALIFIA ARDIANI", pembimbing: "MOHAMAD FATKHUROHMAN, S.Pd.T.", penguji: "SITI KHALIMAH, S.Pd. Mat." },
+            { no: 114, nama: "CHILYA ISTI FADATIL AFLAH", pembimbing: "", penguji: "" },
+            { no: 115, nama: "DEWI LATHIFAH", pembimbing: "", penguji: "" },
+            { no: 116, nama: "DINDA KHAERUNNISA", pembimbing: "", penguji: "" },
+            { no: 117, nama: "EMIR MUSTOFA", pembimbing: "", penguji: "" },
+            { no: 118, nama: "FARIKHA ALMAQFIRA RAMADHANI", pembimbing: "", penguji: "" },
+            { no: 119, nama: "FELISHA MUTIA ZAHRA", pembimbing: "", penguji: "" },
+            { no: 120, nama: "GISKA ANAZAR", pembimbing: "EKO ERIYANTO, S. Pd.", penguji: "HASTA DWI UTAMI, S.Pd.,Gr." },
+            { no: 121, nama: "IKA DINTA APRILIA", pembimbing: "", penguji: "" },
+            { no: 122, nama: "ISMIATUN KHASANAH", pembimbing: "", penguji: "" },
+            { no: 123, nama: "LIDYA FITRIYANI", pembimbing: "", penguji: "" },
+            { no: 124, nama: "LISA ALFINA KHUSNAWATI", pembimbing: "", penguji: "" },
+            { no: 125, nama: "MADRISTA LIVIA MILANISTI", pembimbing: "", penguji: "" },
+            { no: 126, nama: "MAGHFIROTUN KHASANAH", pembimbing: "PUJO MULYONO, S.Pd.", penguji: "CITA LUSTY ARDLIANA, S.Pd. Gr." },
+            { no: 127, nama: "MEZALUNA GHAITSA", pembimbing: "", penguji: "" },
+            { no: 128, nama: "MUHAMAD IRHAS ANANDIAWAN", pembimbing: "", penguji: "" },
+            { no: 129, nama: "MUHAMMAD MUTAWAKKIL ALALLAH ZAINAL", pembimbing: "", penguji: "" },
+            { no: 130, nama: "MUTIARA ANNISA FAUZIAH ALMA'RUF", pembimbing: "", penguji: "" },
+            { no: 131, nama: "Nabila Khoirun Nisa'", pembimbing: "", penguji: "" },
+            { no: 132, nama: "NURIL MALA ARWALU BABA", pembimbing: "RUKHIT", penguji: "GUS MUHLISIN, S.Pd.,M.Pd." },
+            { no: 133, nama: "REFA QOLBINA ZAHIDA", pembimbing: "", penguji: "" },
+            { no: 134, nama: "REVA KHAFIDZATUL RIZQI", pembimbing: "", penguji: "" },
+            { no: 135, nama: "SATHYA ADI WICAKSANA", pembimbing: "", penguji: "" },
+            { no: 136, nama: "SHOIB KHAFIDZIN", pembimbing: "", penguji: "" },
+            { no: 137, nama: "SYAHIDAH ULYA AMANINA", pembimbing: "", penguji: "" },
+            { no: 138, nama: "UMMA FARWA", pembimbing: "DIAH  AYU WULANDARI, S. Si., Gr.", penguji: "MARDINA DEWI WIDIYATI, S.Pd., Gr." },
+            { no: 139, nama: "YAYAN", pembimbing: "", penguji: "" },
+            { no: 140, nama: "YUHROTUN AIDA", pembimbing: "", penguji: "" },
+            { no: 141, nama: "ZAHROTUSSITA", pembimbing: "", penguji: "" },
+            { no: 142, nama: "Achmad Manahilul Irfan", pembimbing: "", penguji: "" },
+            { no: 143, nama: "affa laelatun nada", pembimbing: "", penguji: "" },
+            { no: 144, nama: "AINI AZZAHRA", pembimbing: "PRASETYA, S.Pd.", penguji: "MOHAMMAD UMAR SAID, Lc., M.Pd.I." },
+            { no: 145, nama: "ALIF ARDANSYAH", pembimbing: "", penguji: "" },
+            { no: 146, nama: "ALIKA OKTAVIYANTI", pembimbing: "", penguji: "" },
+            { no: 147, nama: "ASFA IZZATA ZIHNI", pembimbing: "", penguji: "" },
+            { no: 148, nama: "ATIKA DWI MAHARANI", pembimbing: "", penguji: "" },
+            { no: 149, nama: "AUFA ZAIDAN BAKHTIAR", pembimbing: "", penguji: "" },
+            { no: 150, nama: "azkiya nuril jihan", pembimbing: "AKHMAD ADIB, S.Pd.,Gr.", penguji: "EKA PULARSIH, S.Pd., Gr." },
+            { no: 151, nama: "AZZAH SYADZA NAHDA", pembimbing: "", penguji: "" },
+            { no: 152, nama: "azzizan raka abdilla", pembimbing: "", penguji: "" },
+            { no: 153, nama: "Bagus Muhammad Al-Faqih", pembimbing: "", penguji: "" },
+            { no: 154, nama: "bagus setyawan", pembimbing: "", penguji: "" },
+            { no: 155, nama: "CAHAYA FUADATUL HUSNA", pembimbing: "", penguji: "" },
+            { no: 156, nama: "FAIQOH FEBRIANA", pembimbing: "AFIT  WANUGIYANTI WANTI,  S. Pd., Gr.", penguji: "EKA SRI  PUSPITA SARI, S.Pd.,Gr." },
+            { no: 157, nama: "FALIHAH AL HASNA", pembimbing: "", penguji: "" },
+            { no: 158, nama: "FAYASA LAELA LUSIFA", pembimbing: "", penguji: "" },
+            { no: 159, nama: "FINA HIMATUL ULYA", pembimbing: "", penguji: "" },
+            { no: 160, nama: "GHANI AWALUDIN RABBANI", pembimbing: "", penguji: "" },
+            { no: 161, nama: "Halilintar putra akhmad", pembimbing: "", penguji: "" },
+            { no: 162, nama: "IBRAHIM ZAIDAN NAUVAL", pembimbing: "M. HILMY ALFARUMBANANY, S.Pd.I., M.Pd.", penguji: "RIZKI AGUNG NUGROHO, S.Pd." },
+            { no: 163, nama: "KANIA YULIANA KARIEN", pembimbing: "", penguji: "" },
+            { no: 164, nama: "KHANSA CANTIKA AL-LATIFAH", pembimbing: "", penguji: "" },
+            { no: 165, nama: "KHOIRUL ANAM", pembimbing: "", penguji: "" },
+            { no: 166, nama: "LINTANG AKBAR IBRAHIM", pembimbing: "", penguji: "" },
+            { no: 167, nama: "M.FATIKHUR RIZKI", pembimbing: "", penguji: "" },
+            { no: 168, nama: "M.SYUFA YUDHA", pembimbing: "GALIH PANGAJI, S.Pd., Gr.", penguji: "NUR KHIKMAH, S.Si., S.Pd." },
+            { no: 169, nama: "Maulida musaroh", pembimbing: "", penguji: "" },
+            { no: 170, nama: "MUHAMAD ARKAN YASID RISQULLAH", pembimbing: "", penguji: "" },
+            { no: 171, nama: "MUHAMMAD MULKAN SAMROTUL FUAD", pembimbing: "", penguji: "" },
+            { no: 172, nama: "NAILY NUR FAIZA", pembimbing: "", penguji: "" },
+            { no: 173, nama: "NATAVIA FALARANCA", pembimbing: "", penguji: "" },
+            { no: 174, nama: "NAURA TRI GIOFANI", pembimbing: "FARAH MA'RIFY, S.Sos. I.", penguji: "DANIS AGUNG NUGROHO, S.Pd., M.Pd." },
+            { no: 175, nama: "nihayatur rizqi", pembimbing: "", penguji: "" },
+            { no: 176, nama: "REHAN YUDHA PRATAMA", pembimbing: "", penguji: "" },
+            { no: 177, nama: "ZAHRA MADINA", pembimbing: "", penguji: "" },
+            { no: 178, nama: "Adinda Lestari", pembimbing: "", penguji: "" },
+            { no: 179, nama: "AFRIZAL KHOIRUL ROBITH", pembimbing: "", penguji: "" },
+            { no: 180, nama: "AIDATUN NAFILAH", pembimbing: "RAFIKA APRILIAWATI, S.Pd. Gr", penguji: "ARDY SURYANTOKO, S.Pd." },
+            { no: 181, nama: "ARIJ NAJMA MUSTOFA", pembimbing: "", penguji: "" },
+            { no: 182, nama: "CHATYA NUR ANNAHARI", pembimbing: "", penguji: "" },
+            { no: 183, nama: "DIFKY IMAM FITRAH", pembimbing: "", penguji: "" },
+            { no: 184, nama: "DYNAR ALFA FAZA", pembimbing: "", penguji: "" },
+            { no: 185, nama: "ELLAZZAR SAMUDRANING AJI", pembimbing: "", penguji: "" },
+            { no: 186, nama: "FAILASUFA ISMA DIANAAZIZA", pembimbing: "ICHTAMILU WAKHIDAH, S.Pd.", penguji: "SITI ROHMAH, S.S." },
+            { no: 187, nama: "FARAH FIDA RAINI", pembimbing: "", penguji: "" },
+            { no: 188, nama: "Fika Aulia", pembimbing: "", penguji: "" },
+            { no: 189, nama: "Fiqh cahyono", pembimbing: "", penguji: "" },
+            { no: 190, nama: "GALIH DWI PRASETIYO", pembimbing: "", penguji: "" },
+            { no: 191, nama: "HANIFAH ILMIRA", pembimbing: "", penguji: "" },
+            { no: 192, nama: "HILWA MAULIDIYA RAHMATIKA", pembimbing: "ZULFIATUN KHASANAH, S.Pd.", penguji: "SULIMAH, S.Pd." },
+            { no: 193, nama: "IFA DHATUL MUAFIDAH", pembimbing: "", penguji: "" },
+            { no: 194, nama: "ILINIA LAYINA KEYSA", pembimbing: "", penguji: "" },
+            { no: 195, nama: "katarina karlin", pembimbing: "", penguji: "" },
+            { no: 196, nama: "LILY ARDHYA NURAISYAH", pembimbing: "", penguji: "" },
+            { no: 197, nama: "M DANI ROMADLON", pembimbing: "", penguji: "" },
+            { no: 198, nama: "M Litan yuali", pembimbing: "MUNIF ZAEDUN, S.Pd., Gr.", penguji: "URIPATUL AENI, S.S." },
+            { no: 199, nama: "M RISKON FINJI", pembimbing: "", penguji: "" },
+            { no: 200, nama: "MASMUNIDA", pembimbing: "", penguji: "" },
+            { no: 201, nama: "MUFTI ABRORI", pembimbing: "", penguji: "" },
+            { no: 202, nama: "MUHAMMAD RAFLI ZULMI ALFIAN", pembimbing: "", penguji: "" },
+            { no: 203, nama: "Muhammad Salman Al Farizi", pembimbing: "", penguji: "" },
+            { no: 204, nama: "MUHAMMAD TAUFIQUROHMAN", pembimbing: "INDARTI SETIORINI, S.Pd.", penguji: "IKA FATMAWATI, S.Pd., Gr." },
+            { no: 205, nama: "Munif Zuhri R", pembimbing: "", penguji: "" },
+            { no: 206, nama: "NABILA AZZAHRA", pembimbing: "", penguji: "" },
+            { no: 207, nama: "NAJWA NUR ALIKA", pembimbing: "", penguji: "" },
+            { no: 208, nama: "Risma isnaini sholehah", pembimbing: "", penguji: "" },
+            { no: 209, nama: "SYIFA NAILU SA'ADAH", pembimbing: "", penguji: "" },
+            { no: 210, nama: "SYIFA TAZKIYATUNNISA", pembimbing: "HASTA DWI UTAMI, S.Pd.,Gr.", penguji: "FAJAR FITRIAWAN, S.Pd." },
+            { no: 211, nama: "teguh imam mulya", pembimbing: "", penguji: "" },
+            { no: 212, nama: "VIONA SEPTIA RAMADHANI", pembimbing: "", penguji: "" },
+            { no: 213, nama: "ZIDNII ULAA", pembimbing: "", penguji: "" },
+            { no: 214, nama: "ADEBA ALFA FAJARINA", pembimbing: "", penguji: "" },
+            { no: 215, nama: "AHMAD NAZIFUL", pembimbing: "", penguji: "" },
+            { no: 216, nama: "AKHTAR SYARIATI HIBATULLAH", pembimbing: "CITA LUSTY ARDLIANA, S.Pd. Gr.", penguji: "KHOIRUNNISA KUMALA, S.Pd." },
+            { no: 217, nama: "ASKIA RIZKI RAHMA AULIA", pembimbing: "", penguji: "" },
+            { no: 218, nama: "AZHAR NASYWA ALMAITSA", pembimbing: "", penguji: "" },
+            { no: 219, nama: "dina putri afiyani", pembimbing: "", penguji: "" },
+            { no: 220, nama: "DINA SA'ADATUL MUFIDA", pembimbing: "", penguji: "" },
+            { no: 221, nama: "DWI AYU RAHMAWATI", pembimbing: "", penguji: "" },
+            { no: 222, nama: "FADEL MUHAMMAD ALBI", pembimbing: "GUS MUHLISIN, S.Pd.,M.Pd.", penguji: "WULIDA MAGHFIROH, S.Pd" },
+            { no: 223, nama: "FAIQ FAIRUZSANI NORIZ", pembimbing: "", penguji: "" },
+            { no: 224, nama: "FARKHANI ZAHROH AGUSTIN", pembimbing: "", penguji: "" },
+            { no: 225, nama: "FIEN SA'ADATUN NAYLA", pembimbing: "", penguji: "" },
+            { no: 226, nama: "FITRANIA LAILATUL RACHMADHANI", pembimbing: "", penguji: "" },
+            { no: 227, nama: "hani fitriana fauziyah", pembimbing: "", penguji: "" },
+            { no: 228, nama: "HASNA MASFUFAH", pembimbing: "MARDINA DEWI WIDIYATI, S.Pd., Gr.", penguji: "PALUPI INDAH NUGRAHENI, S.Pd" },
+            { no: 229, nama: "IBNU AFLAH", pembimbing: "", penguji: "" },
+            { no: 230, nama: "KAFA NAFIISA", pembimbing: "", penguji: "" },
+            { no: 231, nama: "KEYSHA NAZWA WAHYU NINGTYAS", pembimbing: "", penguji: "" },
+            { no: 232, nama: "LANA AMARATUL IRFANIAH", pembimbing: "", penguji: "" },
+            { no: 233, nama: "m.asyfaq ubayyu azji", pembimbing: "", penguji: "" },
+            { no: 234, nama: "MAAL CHRISNA KRIANTI", pembimbing: "MOHAMMAD UMAR SAID, Lc., M.Pd.I.", penguji: "WITRA RIYANITA, S.Pd" },
+            { no: 235, nama: "MAGHFIROTUR ROHMAH", pembimbing: "", penguji: "" },
+            { no: 236, nama: "MANDALA NKK VARONISTI", pembimbing: "", penguji: "" },
+            { no: 237, nama: "MAYLA ISNA SOLEKHA", pembimbing: "", penguji: "" },
+            { no: 238, nama: "MILATINA SHOLIHAH", pembimbing: "", penguji: "" },
+            { no: 239, nama: "NAESYA AYU MUFIDA", pembimbing: "", penguji: "" },
+            { no: 240, nama: "NENG ALMAS DIYA ULHAQ", pembimbing: "EKA PULARSIH, S.Pd., Gr.", penguji: "MUHAMMAD ADI WINATA, S. Kom." },
+            { no: 241, nama: "PUTRI NAJIBA SHOUFIS TSANI", pembimbing: "", penguji: "" },
+            { no: 242, nama: "Rojwana FaraKhiya S", pembimbing: "", penguji: "" },
+            { no: 243, nama: "safira maulina silmi", pembimbing: "", penguji: "" },
+            { no: 244, nama: "SAFIRA MAZAYA RAHMAH", pembimbing: "", penguji: "" },
+            { no: 245, nama: "SAZKIA LOVITA ARFANI", pembimbing: "", penguji: "" },
+            { no: 246, nama: "senja arya annaja", pembimbing: "EKA SRI  PUSPITA SARI, S.Pd.,Gr.", penguji: "AHMAT MUSYAFAK, S. Akun." },
+            { no: 247, nama: "SYAFIRA AULIA ADELINA", pembimbing: "", penguji: "" },
+            { no: 248, nama: "TIARA MA'RIFATUN NADA", pembimbing: "", penguji: "" },
+            { no: 249, nama: "zulfa diatama", pembimbing: "", penguji: "" },
+            { no: 250, nama: "A.IK IZATU TAZKIYATUNNAFS", pembimbing: "", penguji: "" },
+            { no: 251, nama: "Amalia Nur Farifa", pembimbing: "", penguji: "" },
+            { no: 252, nama: "ANDIN NAILA AZKIA", pembimbing: "RIZKI AGUNG NUGROHO, S.Pd.", penguji: "SALWA AMATULLAH, S.Pd" },
+            { no: 253, nama: "ANIK RAHMAWATI", pembimbing: "", penguji: "" },
+            { no: 254, nama: "ATIQOTUN NAFISAH", pembimbing: "", penguji: "" },
+            { no: 255, nama: "BARIKA AZKA MINNATITTAMMI", pembimbing: "", penguji: "" },
+            { no: 256, nama: "DINA OLIVIA", pembimbing: "", penguji: "" },
+            { no: 257, nama: "FADHILAH LAILA SAFITRI", pembimbing: "", penguji: "" },
+            { no: 258, nama: "Firdan Fairus Adabi", pembimbing: "NUR KHIKMAH, S.Si., S.Pd.", penguji: "RIVETA ASTRI NOVITASARI, S.Pd" },
+            { no: 259, nama: "FIRNANDA VIRA KUSUMA", pembimbing: "", penguji: "" },
+            { no: 260, nama: "Hamzah Shohibul Wafa", pembimbing: "", penguji: "" },
+            { no: 261, nama: "HERU HENDRIYANTO", pembimbing: "", penguji: "" },
+            { no: 262, nama: "KAFIYA AAININ NADA", pembimbing: "", penguji: "" },
+            { no: 263, nama: "KAYLLA MUTIARA CINTA SUCI", pembimbing: "", penguji: "" },
+            { no: 264, nama: "KHAIRUNNISA NANDA KIRANA", pembimbing: "DANIS AGUNG NUGROHO, S.Pd., M.Pd.", penguji: "ZULVITA NOURMA UTAMI, S.Pd" },
+            { no: 265, nama: "KHOLILATUL KHUMAIZAH", pembimbing: "", penguji: "" },
+            { no: 266, nama: "KHUROH HILDA MAFAZA", pembimbing: "", penguji: "" },
+            { no: 267, nama: "madina wirdatul aulia", pembimbing: "", penguji: "" },
+            { no: 268, nama: "MALHALUNA SYAQUILA", pembimbing: "", penguji: "" },
+            { no: 269, nama: "MAYA AZKARANI", pembimbing: "", penguji: "" },
+            { no: 270, nama: "MELLANI MATUVANI", pembimbing: "ARDY SURYANTOKO, S.Pd.", penguji: "DWI MARGO RESTYO UTOMO, S.Psi.,Gr." },
+            { no: 271, nama: "MUHAMMAD FARUQ HAQIQI", pembimbing: "", penguji: "" },
+            { no: 272, nama: "NAFISHA QORI LUTFIYANA", pembimbing: "", penguji: "" },
+            { no: 273, nama: "NAILA KHILYATUL KARIMAH", pembimbing: "", penguji: "" },
+            { no: 274, nama: "NURUL HASNA", pembimbing: "", penguji: "" },
+            { no: 275, nama: "RIRIN NOPIYA LESTARI", pembimbing: "", penguji: "" },
+            { no: 276, nama: "Risma Wardatul Mutoharoh", pembimbing: "SITI ROHMAH, S.S.", penguji: "ANISA FEBRIYANA, S.Pd" },
+            { no: 277, nama: "TARA MEI LIANA", pembimbing: "", penguji: "" },
+            { no: 278, nama: "VANYA TRI ANGGRAENI", pembimbing: "", penguji: "" },
+            { no: 279, nama: "yasirotul mauuna", pembimbing: "", penguji: "" },
+            { no: 280, nama: "NIKMATUSSAFINA AZZAHRA", pembimbing: "", penguji: "" },
+            { no: 281, nama: "LUSI WIDI SHUFIANA", pembimbing: "", penguji: "" },
+            { no: 282, nama: "AFAF AL KAFAH", pembimbing: "SULIMAH, S.Pd.", penguji: "BELADIN ANGGIT ADHIM, S.Pd" },
+            { no: 283, nama: "AHMAD IBNU MAHFUDZ", pembimbing: "", penguji: "" },
+            { no: 284, nama: "AHMAD KAHFI YAMIN", pembimbing: "", penguji: "" },
+            { no: 285, nama: "AHMAD NUR RIZQI", pembimbing: "", penguji: "" },
+            { no: 286, nama: "AHMAD SYAFIQ DIAULHAQ", pembimbing: "", penguji: "" },
+            { no: 287, nama: "Alifian Fajradien Nurrochman", pembimbing: "", penguji: "" },
+            { no: 288, nama: "ALMIRA RAMADHANI", pembimbing: "URIPATUL AENI, S.S.", penguji: "GANES ANGGIT SASMITA AJI, S.Pd." },
+            { no: 289, nama: "DEWI NUR LAILI", pembimbing: "", penguji: "" },
+            { no: 290, nama: "DHIA ANIS SAUQI", pembimbing: "", penguji: "" },
+            { no: 291, nama: "FAJAR DZAKWAN", pembimbing: "", penguji: "" },
+            { no: 292, nama: "fatikhatin fauziah fitroh", pembimbing: "", penguji: "" },
+            { no: 293, nama: "GILANG RAMADHAN", pembimbing: "", penguji: "" },
+            { no: 294, nama: "HILMAN BAIHAQI HIDAYAT", pembimbing: "IKA FATMAWATI, S.Pd., Gr.", penguji: "DINI NOVIA RAMADHANI, S.Pd." },
+            { no: 295, nama: "INAYATUL FAUZIAH AL MUKROMAH", pembimbing: "", penguji: "" },
+            { no: 296, nama: "KEYLA RIZKA MAUDYASTUTI", pembimbing: "", penguji: "" },
+            { no: 297, nama: "KHOIRILA ALISA MAGHFIROH", pembimbing: "", penguji: "" },
+            { no: 298, nama: "M. Anwarul Fahmi Ubaedillah", pembimbing: "", penguji: "" },
+            { no: 299, nama: "M.AFHIF NUR FAHRUL ANAM", pembimbing: "", penguji: "" },
+            { no: 300, nama: "M.ZAKI ASWAN", pembimbing: "FAJAR FITRIAWAN, S.Pd.", penguji: "FATIKHA RAHMAWATI,S.Pd" },
+            { no: 301, nama: "MAZAYA AYU", pembimbing: "", penguji: "" },
+            { no: 302, nama: "MEISYA DWI MUJIRIYANTI", pembimbing: "", penguji: "" },
+            { no: 303, nama: "MOH.ALIFULLAH GHOZYL HAQQY", pembimbing: "", penguji: "" },
+            { no: 304, nama: "Muhamad Fatih", pembimbing: "", penguji: "" },
+            { no: 305, nama: "MUHAMMAD KHOIRIAN SUGITO", pembimbing: "", penguji: "" },
+            { no: 306, nama: "Muhammad Rifqi Al-azizi", pembimbing: "KHOIRUNNISA KUMALA, S.Pd.", penguji: "AGUS PRASETYO,S.Pd" },
+            { no: 307, nama: "Muhammad Ubaidillah Zufar Alawi", pembimbing: "", penguji: "" },
+            { no: 308, nama: "NAHLAH AZKA BAHARI", pembimbing: "", penguji: "" },
+            { no: 309, nama: "NAZAL FAIQOH WIJIATMOKO", pembimbing: "", penguji: "" },
+            { no: 310, nama: "NUR FAHRI HIDAYAT", pembimbing: "", penguji: "" },
+            { no: 311, nama: "Sinta rahayu", pembimbing: "", penguji: "" },
+            { no: 312, nama: "SITI AISYAH", pembimbing: "WULIDA MAGHFIROH, S.Pd", penguji: "ABDILLAH MUNTAKO,S.Pd" },
+            { no: 313, nama: "TAZKIA MUNA", pembimbing: "", penguji: "" },
+            { no: 314, nama: "TAZKIYATUNNAFS AZKA AZALIA", pembimbing: "", penguji: "" },
+            { no: 315, nama: "VANESA DENIRA ZAHRA", pembimbing: "", penguji: "" },
+            { no: 316, nama: "winda dwi agustina", pembimbing: "", penguji: "" },
+            { no: 317, nama: "ZAHROTUN NAFINGAH", pembimbing: "", penguji: "" },
+            { no: 318, nama: "M.Hirzihim Kafabih", pembimbing: "PALUPI INDAH NUGRAHENI, S.Pd", penguji: "VIKIS SUSANTO,S.Pd" },
+            { no: 319, nama: "ADELA LINTANG SAROYA", pembimbing: "", penguji: "" },
+            { no: 320, nama: "ADZIN EVAN BERNDINE", pembimbing: "", penguji: "" },
+            { no: 321, nama: "AHMAD ALI ABDILLAH", pembimbing: "", penguji: "" },
+            { no: 322, nama: "AHMAD FAIZ AL GHIFARY", pembimbing: "", penguji: "" },
+            { no: 323, nama: "ALDILA AIRIN AENI", pembimbing: "", penguji: "" },
+            { no: 324, nama: "ALMIRA TAZKIYA NAHDLIYA AULIA", pembimbing: "WITRA RIYANITA, S.Pd", penguji: "RINTANA WATI RAHAYU,S.Pd" },
+            { no: 325, nama: "ALZENA AZALIA", pembimbing: "", penguji: "" },
+            { no: 326, nama: "ANDHIKA YAHYA RAMADHAN", pembimbing: "", penguji: "" },
+            { no: 327, nama: "ANITA RAHAYU", pembimbing: "", penguji: "" },
+            { no: 328, nama: "annaya putri arifin", pembimbing: "", penguji: "" },
+            { no: 329, nama: "ATHAILLAH RIFQI MUAFFANI", pembimbing: "", penguji: "" },
+            { no: 330, nama: "AZA FIRNANDI MAHINDRA", pembimbing: "MUHAMMAD ADI WINATA, S. Kom.", penguji: "EKO ERIYANTO, S. Pd." },
+            { no: 331, nama: "CHITYA NUR ROHANI", pembimbing: "", penguji: "" },
+            { no: 332, nama: "DHANI AULIA HIDAYAT", pembimbing: "", penguji: "" },
+            { no: 333, nama: "DHEA SANDY AULIA", pembimbing: "", penguji: "" },
+            { no: 334, nama: "FARIK AGRAPRANA", pembimbing: "", penguji: "" },
+            { no: 335, nama: "FAZA NILFANA SOFA", pembimbing: "", penguji: "" },
+            { no: 336, nama: "FINA HILMIYA KHAIRUNNISA", pembimbing: "AHMAT MUSYAFAK, S. Akun.", penguji: "PUJO MULYONO, S.Pd." },
+            { no: 337, nama: "HILMI ABDILLAH", pembimbing: "", penguji: "" },
+            { no: 338, nama: "ILZAM ANNAWA", pembimbing: "", penguji: "" },
+            { no: 339, nama: "IRSYADHI ANAM", pembimbing: "", penguji: "" },
+            { no: 340, nama: "MUHAMMAD ARZU SABIQ SETIAJI", pembimbing: "", penguji: "" },
+            { no: 341, nama: "MUHAMMAD KEVYAN ALMUNAJ", pembimbing: "", penguji: "" },
+            { no: 342, nama: "NAFIS ZAINANNISA AK-KHUSNA", pembimbing: "SALWA AMATULLAH, S.Pd", penguji: "RUKHIT" },
+            { no: 343, nama: "NUR FASIKHA", pembimbing: "", penguji: "" },
+            { no: 344, nama: "NURUL FACHRI AL ROJAL", pembimbing: "", penguji: "" },
+            { no: 345, nama: "QHOIRUN NISA APRILLIA AYU WULANDARI", pembimbing: "", penguji: "" },
+            { no: 346, nama: "SAFIRA NOOR MUGHITSAH", pembimbing: "", penguji: "" },
+            { no: 347, nama: "SAKINAH KHOIRUN NISA", pembimbing: "", penguji: "" },
+            { no: 348, nama: "Wika Amalia", pembimbing: "RIVETA ASTRI NOVITASARI, S.Pd", penguji: "DIAH  AYU WULANDARI, S. Si., Gr." },
+            { no: 349, nama: "ABDUL KHANIF AL_HAQ", pembimbing: "", penguji: "" },
+            { no: 350, nama: "AHSANU NADIYYA", pembimbing: "", penguji: "" },
+            { no: 351, nama: "AMARA BILQISTH SHOLATIN", pembimbing: "", penguji: "" },
+            { no: 352, nama: "AURA DIVA FAZALINA", pembimbing: "", penguji: "" },
+            { no: 353, nama: "Balqis Imamah Anjelina Nur Basya", pembimbing: "", penguji: "" },
+            { no: 354, nama: "DIAZ ZAHWA MAULIDA", pembimbing: "ZULVITA NOURMA UTAMI, S.Pd", penguji: "PRASETYA, S.Pd." },
+            { no: 355, nama: "DWI SAFITRI", pembimbing: "", penguji: "" },
+            { no: 356, nama: "ELLIZA AMELIA PUTRI", pembimbing: "", penguji: "" },
+            { no: 357, nama: "FADHLURROHMAN MURTADHO", pembimbing: "", penguji: "" },
+            { no: 358, nama: "FAIRUS SYIFA QURATUAIN", pembimbing: "", penguji: "" },
+            { no: 359, nama: "fairuz fahri tahta inayati robbi", pembimbing: "", penguji: "" },
+            { no: 360, nama: "GILANG RAMADHAN", pembimbing: "DWI MARGO RESTYO UTOMO, S.Psi.,Gr.", penguji: "AKHMAD ADIB, S.Pd.,Gr." },
+            { no: 361, nama: "GUFRON DAI' SAPUTRA", pembimbing: "", penguji: "" },
+            { no: 362, nama: "HAIDAR IRHAB TUBBA ASSYAHIR", pembimbing: "", penguji: "" },
+            { no: 363, nama: "HANA AULIA SALSABILA", pembimbing: "", penguji: "" },
+            { no: 364, nama: "JARON PUTRA ADITYA", pembimbing: "", penguji: "" },
+            { no: 365, nama: "KHARISMA YOGI NOVIANA", pembimbing: "", penguji: "" },
+            { no: 366, nama: "M.FAHRIYAN IRSYADI", pembimbing: "ANISA FEBRIYANA, S.Pd", penguji: "AFIT  WANUGIYANTI WANTI,  S. Pd., Gr." },
+            { no: 367, nama: "muhamad gilang rizqi", pembimbing: "", penguji: "" },
+            { no: 368, nama: "MUHAMMAD BUDI MUSAFAQ", pembimbing: "", penguji: "" },
+            { no: 369, nama: "MUHAMMAD RODIT ARZAK", pembimbing: "", penguji: "" },
+            { no: 370, nama: "NADIRA AZ-ZAHRA", pembimbing: "", penguji: "" },
+            { no: 371, nama: "NAFIL ISNA FADHLU ROHMAN", pembimbing: "", penguji: "" },
+            { no: 372, nama: "NAJWA JAMILATUL ILMA", pembimbing: "BELADIN ANGGIT ADHIM, S.Pd", penguji: "M. HILMY ALFARUMBANANY, S.Pd.I., M.Pd." },
+            { no: 373, nama: "NUR SYAFARILLA", pembimbing: "", penguji: "" },
+            { no: 374, nama: "NURMAYZATUL AKMAL", pembimbing: "", penguji: "" },
+            { no: 375, nama: "RISANG NOVIAN SAMUDRA", pembimbing: "", penguji: "" },
+            { no: 376, nama: "SEPTI ANJANI", pembimbing: "", penguji: "" },
+            { no: 377, nama: "TAZKIA HUMAIRA KAENI PUTRI", pembimbing: "", penguji: "" },
+            { no: 378, nama: "ULUL AZMI", pembimbing: "GANES ANGGIT SASMITA AJI, S.Pd.", penguji: "GALIH PANGAJI, S.Pd., Gr." },
+            { no: 379, nama: "VIOLA MAULANI", pembimbing: "", penguji: "" },
+            { no: 380, nama: "WILONA HIKMATUN NAYLA", pembimbing: "", penguji: "" },
+            { no: 381, nama: "zahra muthia khanza", pembimbing: "", penguji: "" },
+            { no: 382, nama: "ZAIDAN ROFIQ MAHBUB", pembimbing: "", penguji: "" },
+            { no: 383, nama: "ZARQA SYAFIEQ WARDAH AL MUNA", pembimbing: "", penguji: "" },
+            { no: 384, nama: "ZULFA FITRIYANA", pembimbing: "DINI NOVIA RAMADHANI, S.Pd.", penguji: "FARAH MA'RIFY, S.Sos. I." },
+            { no: 385, nama: "ADIBATUN NISA", pembimbing: "", penguji: "" },
+            { no: 386, nama: "ADITA MAGHFIRATUN NISA", pembimbing: "", penguji: "" },
+            { no: 387, nama: "AGESYA ALIFATUL CHASANAH", pembimbing: "", penguji: "" },
+            { no: 388, nama: "ANIQOTUL ATIYYA", pembimbing: "", penguji: "" },
+            { no: 389, nama: "Arina Nilna Muna", pembimbing: "", penguji: "" },
+            { no: 390, nama: "ARJUNA MICHAEL MATIEN", pembimbing: "FATIKHA RAHMAWATI,S.Pd", penguji: "RAFIKA APRILIAWATI, S.Pd. Gr" },
+            { no: 391, nama: "Aulia Rahmi", pembimbing: "", penguji: "" },
+            { no: 392, nama: "AURRA SALSABILA", pembimbing: "", penguji: "" },
+            { no: 393, nama: "BEBYOLA ASTA JUARA", pembimbing: "", penguji: "" },
+            { no: 394, nama: "DEALISSYA OKTAFIA", pembimbing: "", penguji: "" },
+            { no: 395, nama: "Dzaki afif zain", pembimbing: "", penguji: "" },
+            { no: 396, nama: "FAYKHA YUMNA ALIFIA", pembimbing: "AGUS PRASETYO,S.Pd", penguji: "ICHTAMILU WAKHIDAH, S.Pd." },
+            { no: 397, nama: "FERDIAN PUTRA KHOLIQ", pembimbing: "", penguji: "" },
+            { no: 398, nama: "FINA FARIKHAH", pembimbing: "", penguji: "" },
+            { no: 399, nama: "FITA FAUZIYAH", pembimbing: "", penguji: "" },
+            { no: 400, nama: "GHAIDA FAHMI IZZATUNNISA", pembimbing: "", penguji: "" },
+            { no: 401, nama: "HAFIZH WAHYU SAPUTRA", pembimbing: "", penguji: "" },
+            { no: 402, nama: "Hikmatul Illahiyah", pembimbing: "ABDILLAH MUNTAKO,S.Pd", penguji: "ZULFIATUN KHASANAH, S.Pd." },
+            { no: 403, nama: "HILYA RUSYDA AL HAMIDAH", pembimbing: "", penguji: "" },
+            { no: 404, nama: "ITSNA MAR'ATUS SHOLIHAH", pembimbing: "", penguji: "" },
+            { no: 405, nama: "khaura atthaya khansa", pembimbing: "", penguji: "" },
+            { no: 406, nama: "m ali mahfuzi", pembimbing: "", penguji: "" },
+            { no: 407, nama: "M. DWI IMAM FARHAN", pembimbing: "", penguji: "" },
+            { no: 408, nama: "M.Daffa Azka Jauna", pembimbing: "VIKIS SUSANTO,S.Pd", penguji: "MUNIF ZAEDUN, S.Pd., Gr." },
+            { no: 409, nama: "mazah khodijatul afifah", pembimbing: "", penguji: "" },
+            { no: 410, nama: "MUKHAMMAD HAIKAL", pembimbing: "", penguji: "" },
+            { no: 411, nama: "NADIYA MARYAM WENNO", pembimbing: "", penguji: "" },
+            { no: 412, nama: "NAILA FAUZIYAH", pembimbing: "", penguji: "" },
+            { no: 413, nama: "NAJWA AULIYA WAFDA", pembimbing: "", penguji: "" },
+            { no: 414, nama: "Nasyada Azmi Meyssiana", pembimbing: "RINTANA WATI RAHAYU,S.Pd", penguji: "INDARTI SETIORINI, S.Pd." },
+            { no: 415, nama: "Rizqy Khusna Amalia", pembimbing: "", penguji: "" },
+            { no: 416, nama: "SIREN KHAFIFAH ARAHMAN", pembimbing: "", penguji: "" },
+            { no: 417, nama: "WAFA NUR KAMILA", pembimbing: "", penguji: "" },
+            { no: 418, nama: "YUSUF MUIZZUL FARHANY", pembimbing: "", penguji: "" },
+            { no: 419, nama: "ZUWAIDATUL HUSNA", pembimbing: "", penguji: "" }
+        ];
+
+        // Fungsi untuk mengisi data yang kosong dengan nilai dari baris sebelumnya
+        function fillMissingData(data) {
+            let lastPembimbing = "";
+            let lastPenguji = "";
+            
+            return data.map(item => {
+                // Jika pembimbing kosong, gunakan nilai dari baris sebelumnya
+                if (item.pembimbing && item.pembimbing.trim() !== "") {
+                    lastPembimbing = item.pembimbing;
+                } else if (item.pembimbing === "") {
+                    item.pembimbing = lastPembimbing;
+                }
+                
+                // Jika penguji kosong, gunakan nilai dari baris sebelumnya
+                if (item.penguji && item.penguji.trim() !== "") {
+                    lastPenguji = item.penguji;
+                } else if (item.penguji === "") {
+                    item.penguji = lastPenguji;
+                }
+                
+                return item;
+            });
+        }
+
+        // Data siswa yang sudah diproses
+        let studentsData = fillMissingData(rawData);
+        let mentors = new Set();
+        let examiners = new Set();
+        
+        // Elemen DOM
+        const categorySelect = document.getElementById('category');
+        const nameInput = document.getElementById('name');
+        const searchTypeSelect = document.getElementById('searchType');
+        const searchButton = document.getElementById('searchButton');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsBody = document.getElementById('resultsBody');
+        const resultsCount = document.getElementById('resultsCount');
+        const noResults = document.getElementById('noResults');
+        const loader = document.getElementById('loader');
+        const studentCount = document.getElementById('studentCount');
+        const mentorCount = document.getElementById('mentorCount');
+        const examinerCount = document.getElementById('examinerCount');
+        const searchSummary = document.getElementById('searchSummary');
+        const dataCount = document.getElementById('dataCount');
+        const exportButton = document.getElementById('exportButton');
+        const pagination = document.getElementById('pagination');
+        
+        // Variabel untuk pagination
+        let currentPage = 1;
+        const resultsPerPage = 20;
+        let currentResults = [];
+        
+        // Fungsi untuk menginisialisasi data
+        function initializeData() {
+            // Hitung jumlah pembimbing dan penguji unik
+            studentsData.forEach(student => {
+                if (student.pembimbing && student.pembimbing.trim() !== "") {
+                    mentors.add(student.pembimbing.trim());
+                }
+                
+                if (student.penguji && student.penguji.trim() !== "") {
+                    examiners.add(student.penguji.trim());
+                }
+            });
+            
+            // Update statistik
+            studentCount.textContent = studentsData.length;
+            mentorCount.textContent = mentors.size;
+            examinerCount.textContent = examiners.size;
+            dataCount.textContent = studentsData.length;
+            
+            // Isi autocomplete untuk nama
+            populateNameAutocomplete();
+            
+            // Tampilkan alert sukses
+            const successAlert = document.getElementById('successAlert');
+            successAlert.style.display = 'block';
+            
+            // Sembunyikan alert setelah 5 detik
+            setTimeout(() => {
+                successAlert.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Fungsi untuk mengisi autocomplete nama
+        function populateNameAutocomplete() {
+            // Gabungkan semua nama mentor dan examiner
+            const allNames = [...mentors, ...examiners].sort();
+            
+            // Buat datalist untuk autocomplete
+            let datalist = document.getElementById('nameDatalist');
+            if (!datalist) {
+                datalist = document.createElement('datalist');
+                datalist.id = 'nameDatalist';
+                document.body.appendChild(datalist);
+                nameInput.setAttribute('list', 'nameDatalist');
+            }
+            
+            // Kosongkan dan isi ulang
+            datalist.innerHTML = '';
+            allNames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                datalist.appendChild(option);
+            });
+        }
+        
+        // Fungsi untuk melakukan pencarian
+        function performSearch() {
+            const category = categorySelect.value;
+            const name = nameInput.value.trim();
+            const searchType = searchTypeSelect.value;
+            
+            if (!name) {
+                alert("Silakan masukkan nama untuk dicari.");
+                return;
+            }
+            
+            // Tampilkan loader
+            loader.style.display = 'block';
+            resultsSection.style.display = 'none';
+            
+            // Simulasi proses pencarian (untuk memberikan efek loading)
+            setTimeout(() => {
+                const results = searchData(category, name, searchType);
+                displayResults(results, category, name);
+                loader.style.display = 'none';
+                resultsSection.style.display = 'block';
+            }, 300);
+        }
+        
+        // Fungsi untuk mencari data
+        function searchData(category, name, searchType) {
+            const results = [];
+            
+            studentsData.forEach(student => {
+                let match = false;
+                
+                if (category === 'keduanya') {
+                    // Cari di kedua kolom
+                    const matchPembimbing = checkMatch(student.pembimbing, name, searchType);
+                    const matchPenguji = checkMatch(student.penguji, name, searchType);
+                    match = matchPembimbing || matchPenguji;
+                } else {
+                    const targetName = category === 'pembimbing' ? student.pembimbing : student.penguji;
+                    match = checkMatch(targetName, name, searchType);
+                }
+                
+                if (match) {
+                    results.push({
+                        ...student,
+                        role: category === 'keduanya' ? 
+                            (checkMatch(student.pembimbing, name, searchType) ? 'pembimbing' : 'penguji') : 
+                            category
+                    });
+                }
+            });
+            
+            return results;
+        }
+        
+        // Fungsi untuk memeriksa kecocokan berdasarkan tipe pencarian
+        function checkMatch(text, searchTerm, searchType) {
+            if (!text || text.trim() === '') return false;
+            
+            const textLower = text.toLowerCase();
+            const searchLower = searchTerm.toLowerCase();
+            
+            switch(searchType) {
+                case 'exact':
+                    return textLower === searchLower;
+                case 'contains':
+                    return textLower.includes(searchLower);
+                case 'startsWith':
+                    return textLower.startsWith(searchLower);
+                default:
+                    return textLower.includes(searchLower);
+            }
+        }
+        
+        // Fungsi untuk menampilkan hasil pencarian
+        function displayResults(results, category, searchName) {
+            currentResults = results;
+            currentPage = 1;
+            
+            // Update jumlah hasil
+            resultsCount.textContent = `${results.length} hasil ditemukan`;
+            
+            // Update ringkasan pencarian
+            let roleText = "";
+            if (category === 'pembimbing') roleText = 'Pembimbing';
+            else if (category === 'penguji') roleText = 'Penguji';
+            else roleText = 'Pembimbing atau Penguji';
+            
+            searchSummary.textContent = `Menampilkan siswa dengan ${roleText.toLowerCase()}: "${searchName}"`;
+            
+            if (results.length === 0) {
+                noResults.style.display = 'block';
+                resultsBody.innerHTML = '';
+                pagination.innerHTML = '';
+                exportButton.style.display = 'none';
+                return;
+            }
+            
+            noResults.style.display = 'none';
+            exportButton.style.display = 'inline-flex';
+            
+            // Tampilkan hasil dengan pagination
+            displayPage(currentPage);
+            setupPagination(results.length);
+        }
+        
+        // Fungsi untuk menampilkan halaman tertentu
+        function displayPage(page) {
+            const startIndex = (page - 1) * resultsPerPage;
+            const endIndex = Math.min(startIndex + resultsPerPage, currentResults.length);
+            const pageResults = currentResults.slice(startIndex, endIndex);
+            
+            // Kosongkan tabel
+            resultsBody.innerHTML = '';
+            
+            // Isi tabel dengan hasil
+            pageResults.forEach((student, index) => {
+                const row = document.createElement('tr');
+                const globalIndex = startIndex + index + 1;
+                
+                // Highlight nama yang dicari
+                let pembimbingCell = student.pembimbing;
+                let pengujiCell = student.penguji;
+                const searchName = nameInput.value.trim().toLowerCase();
+                
+                if (student.pembimbing && student.pembimbing.toLowerCase().includes(searchName)) {
+                    pembimbingCell = highlightText(student.pembimbing, nameInput.value.trim());
+                }
+                
+                if (student.penguji && student.penguji.toLowerCase().includes(searchName)) {
+                    pengujiCell = highlightText(student.penguji, nameInput.value.trim());
+                }
+                
+                row.innerHTML = `
+                    <td>${student.no}</td>
+                    <td>${student.nama}</td>
+                    <td>${pembimbingCell}</td>
+                    <td>${pengujiCell}</td>
+                    <td><span class="role-badge ${student.role === 'pembimbing' ? 'pembimbing-badge' : 'penguji-badge'}">${student.role === 'pembimbing' ? 'B' : 'U'}</span></td>
+                `;
+                
+                resultsBody.appendChild(row);
+            });
+        }
+        
+        // Fungsi untuk menyorot teks yang cocok
+        function highlightText(text, searchTerm) {
+            if (!searchTerm || !text) return text;
+            
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+        
+        // Fungsi untuk setup pagination
+        function setupPagination(totalResults) {
+            const totalPages = Math.ceil(totalResults / resultsPerPage);
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '';
+            
+            // Tombol sebelumnya
+            paginationHTML += `<button class="page-button" id="prevPage" ${currentPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+            
+            // Tombol halaman
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `<button class="page-button ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+            }
+            
+            // Tombol selanjutnya
+            paginationHTML += `<button class="page-button" id="nextPage" ${currentPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+            
+            pagination.innerHTML = paginationHTML;
+            
+            // Tambahkan event listener untuk tombol pagination
+            document.getElementById('prevPage')?.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayPage(currentPage);
+                    setupPagination(totalResults);
+                }
+            });
+            
+            document.getElementById('nextPage')?.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayPage(currentPage);
+                    setupPagination(totalResults);
+                }
+            });
+            
+            document.querySelectorAll('.page-button[data-page]').forEach(button => {
+                button.addEventListener('click', () => {
+                    currentPage = parseInt(button.getAttribute('data-page'));
+                    displayPage(currentPage);
+                    setupPagination(totalResults);
+                });
+            });
+        }
+        
+        // Fungsi untuk mengekspor data ke Excel
+        function exportToExcel() {
+            if (currentResults.length === 0) {
+                alert("Tidak ada data untuk diekspor.");
+                return;
+            }
+            
+            // Buat data untuk ekspor
+            const exportData = currentResults.map(result => ({
+                "NO.": result.no,
+                "NAMA SISWA": result.nama,
+                "PEMBIMBING": result.pembimbing,
+                "PENGUJI": result.penguji,
+                "PERAN": result.role === 'pembimbing' ? 'Pembimbing' : 'Penguji'
+            }));
+            
+            // Konversi ke CSV
+            const headers = ["NO.", "NAMA SISWA", "PEMBIMBING", "PENGUJI", "PERAN"];
+            const csvContent = [
+                headers.join(","),
+                ...exportData.map(row => 
+                    headers.map(header => `"${row[header] || ''}"`).join(",")
+                )
+            ].join("\n");
+            
+            // Buat blob dan download
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", `hasil_pencarian_${nameInput.value.trim()}_${new Date().toISOString().slice(0,10)}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Event Listeners
+        searchButton.addEventListener('click', performSearch);
+        exportButton.addEventListener('click', exportToExcel);
+        
+        // Tambahkan event listener untuk pencarian dengan tombol Enter
+        nameInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        // Tambahkan event listener untuk mengubah kategori
+        categorySelect.addEventListener('change', function() {
+            // Kosongkan input nama saat mengganti kategori
+            nameInput.value = '';
+            nameInput.focus();
+        });
+        
+        // Inisialisasi data saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            
+            // Beri contoh pencarian
+            nameInput.value = "EKO ERIYANTO";
+            categorySelect.value = "pembimbing";
+        });
+    </script>
+</body>
+</html>
