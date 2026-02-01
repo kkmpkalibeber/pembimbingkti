@@ -5,17 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cari Pembimbing & Penguji</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #4361ee;
             --secondary: #3a0ca3;
             --accent: #f72585;
+            --success: #4cc9f0;
+            --teacher: #7209b7;
+            --student: #4cc9f0;
             --light: #f8f9fa;
             --dark: #212529;
-            --success: #4cc9f0;
-            --warning: #ff9e00;
-            --danger: #f72585;
             --card-bg: #ffffff;
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             --radius: 16px;
@@ -40,7 +39,7 @@
             overflow-x: hidden;
         }
         
-        /* Header dengan gradient modern */
+        /* Header */
         .app-header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
@@ -89,15 +88,92 @@
             margin-top: 5px;
         }
         
-        /* Container utama */
+        /* Pilihan Mode */
+        .mode-selector {
+            max-width: 800px;
+            margin: 30px auto 20px;
+            padding: 0 20px;
+        }
+        
+        .mode-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark);
+            font-size: 1.2rem;
+        }
+        
+        .mode-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .mode-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+        
+        .mode-card.active {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        .mode-card:active {
+            transform: translateY(-2px);
+        }
+        
+        .mode-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 15px;
+        }
+        
+        .teacher-icon {
+            background: rgba(114, 9, 183, 0.15);
+            color: var(--teacher);
+        }
+        
+        .student-icon {
+            background: rgba(76, 201, 240, 0.15);
+            color: var(--student);
+        }
+        
+        .mode-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .mode-desc {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        /* Container Utama */
         .app-container {
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
             padding-bottom: 100px;
+            display: none;
         }
         
-        /* Kartu statistik */
+        .app-container.active {
+            display: block;
+        }
+        
+        /* Statistik */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -134,7 +210,7 @@
             letter-spacing: 0.5px;
         }
         
-        /* Kartu pencarian */
+        /* Kartu Pencarian */
         .search-card {
             background: var(--card-bg);
             border-radius: var(--radius);
@@ -161,7 +237,7 @@
             font-weight: 700;
         }
         
-        /* Form pencarian */
+        /* Form Pencarian */
         .search-form {
             display: flex;
             flex-direction: column;
@@ -225,7 +301,7 @@
             box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
         }
         
-        /* Hasil pencarian */
+        /* Hasil Pencarian */
         .results-card {
             background: var(--card-bg);
             border-radius: var(--radius);
@@ -271,7 +347,7 @@
             transform: translateY(2px);
         }
         
-        /* Tabel hasil (mobile-friendly) */
+        /* Tabel Hasil */
         .results-table {
             width: 100%;
             overflow-x: auto;
@@ -328,7 +404,7 @@
         
         .penguji-badge {
             background: rgba(247, 37, 133, 0.15);
-            color: var(--danger);
+            color: var(--accent);
         }
         
         .highlight {
@@ -377,7 +453,7 @@
             transform: translateY(2px);
         }
         
-        /* Tidak ada hasil */
+        /* Tidak Ada Hasil */
         .no-results {
             text-align: center;
             padding: 40px 20px;
@@ -394,7 +470,7 @@
             font-size: 1rem;
         }
         
-        /* Bottom navigation */
+        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -417,6 +493,7 @@
             padding: 8px 12px;
             border-radius: 12px;
             transition: var(--transition);
+            cursor: pointer;
         }
         
         .nav-item.active {
@@ -437,7 +514,7 @@
             font-weight: 600;
         }
         
-        /* Loading spinner */
+        /* Loading Spinner */
         .loader {
             display: none;
             text-align: center;
@@ -476,7 +553,7 @@
             border-left: 4px solid #4cc9f0;
         }
         
-        /* Responsive adjustments */
+        /* Responsive */
         @media (max-width: 480px) {
             .app-header {
                 padding: 20px 16px;
@@ -484,6 +561,14 @@
             
             .app-title h1 {
                 font-size: 1.3rem;
+            }
+            
+            .mode-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .mode-card {
+                padding: 20px 16px;
             }
             
             .app-container {
@@ -518,7 +603,7 @@
             }
         }
         
-        /* Dark mode support */
+        /* Dark Mode */
         @media (prefers-color-scheme: dark) {
             :root {
                 --light: #1a1a1a;
@@ -546,7 +631,7 @@
                 border-color: #444;
             }
             
-            .stat-card, .search-card, .results-card {
+            .stat-card, .search-card, .results-card, .mode-card {
                 background: var(--card-bg);
             }
             
@@ -567,17 +652,33 @@
                 </div>
                 <h1>Cari Pembimbing & Penguji</h1>
             </div>
-            <p class="app-subtitle">Temukan data siswa berdasarkan pembimbing atau penguji</p>
+            <p class="app-subtitle">Pilih mode pengguna untuk mulai mencari</p>
         </div>
     </header>
     
-    <!-- Container Utama -->
-    <main class="app-container">
-        <!-- Alert Sukses -->
-        <div class="alert alert-success" id="successAlert">
-            <i class="fas fa-check-circle"></i> Data berhasil dimuat! 419 data siswa tersedia.
+    <!-- Pilihan Mode -->
+    <div class="mode-selector">
+        <h2 class="mode-title">Saya adalah:</h2>
+        <div class="mode-cards">
+            <div class="mode-card active" id="teacherMode">
+                <div class="mode-icon teacher-icon">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <div class="mode-name">Guru/Dosen</div>
+                <div class="mode-desc">Cari siswa yang saya bimbing/uji</div>
+            </div>
+            <div class="mode-card" id="studentMode">
+                <div class="mode-icon student-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="mode-name">Siswa/Mahasiswa</div>
+                <div class="mode-desc">Cari pembimbing & penguji saya</div>
+            </div>
         </div>
-        
+    </div>
+    
+    <!-- Mode Guru -->
+    <main class="app-container active" id="teacherContainer">
         <!-- Statistik -->
         <div class="stats-grid">
             <div class="stat-card">
@@ -594,19 +695,19 @@
             </div>
         </div>
         
-        <!-- Pencarian -->
+        <!-- Pencarian Guru -->
         <section class="search-card">
             <div class="section-title">
                 <i class="fas fa-search"></i>
-                <h2>Cari Data</h2>
+                <h2>Cari Siswa</h2>
             </div>
             
-            <form class="search-form" id="searchForm">
+            <form class="search-form" id="teacherSearchForm">
                 <div class="form-group">
                     <label class="form-label">
                         <i class="fas fa-filter"></i> Kategori
                     </label>
-                    <select class="form-select" id="category">
+                    <select class="form-select" id="teacherCategory">
                         <option value="pembimbing">Pembimbing</option>
                         <option value="penguji">Penguji</option>
                         <option value="keduanya">Keduanya</option>
@@ -615,90 +716,193 @@
                 
                 <div class="form-group">
                     <label class="form-label">
-                        <i class="fas fa-user"></i> Nama
+                        <i class="fas fa-user"></i> Nama Saya
                     </label>
-                    <input type="text" class="form-input" id="name" placeholder="Masukkan nama..." autocomplete="off">
+                    <input type="text" class="form-input" id="teacherName" placeholder="Masukkan nama Anda..." autocomplete="off">
                 </div>
                 
                 <div class="form-group">
                     <label class="form-label">
                         <i class="fas fa-sliders-h"></i> Tipe Pencarian
                     </label>
-                    <select class="form-select" id="searchType">
+                    <select class="form-select" id="teacherSearchType">
                         <option value="contains">Mengandung</option>
                         <option value="exact">Tepat</option>
                         <option value="startsWith">Dimulai dengan</option>
                     </select>
                 </div>
                 
-                <button type="button" class="search-button" id="searchButton">
-                    <i class="fas fa-search"></i> Cari Sekarang
+                <button type="button" class="search-button" id="teacherSearchButton">
+                    <i class="fas fa-search"></i> Cari Siswa Saya
                 </button>
             </form>
         </section>
         
         <!-- Loader -->
-        <div class="loader" id="loader">
+        <div class="loader" id="teacherLoader">
             <i class="fas fa-spinner"></i>
-            <p>Memproses pencarian...</p>
+            <p>Mencari data siswa...</p>
         </div>
         
-        <!-- Hasil Pencarian -->
-        <section class="results-card" id="resultsCard">
+        <!-- Hasil Pencarian Guru -->
+        <section class="results-card" id="teacherResultsCard">
             <div class="results-header">
-                <div class="results-count" id="resultsCount">0 hasil</div>
-                <button class="export-button" id="exportButton">
+                <div class="results-count" id="teacherResultsCount">0 hasil</div>
+                <button class="export-button" id="teacherExportButton">
                     <i class="fas fa-download"></i> Ekspor
                 </button>
             </div>
             
             <div class="results-table">
-                <table id="resultsTable">
+                <table id="teacherResultsTable">
                     <thead>
                         <tr>
                             <th>NO</th>
-                            <th>SISWA</th>
+                            <th>NAMA SISWA</th>
                             <th>PEMBIMBING</th>
                             <th>PENGUJI</th>
                             <th>PERAN</th>
                         </tr>
                     </thead>
-                    <tbody id="resultsBody">
+                    <tbody id="teacherResultsBody">
                         <!-- Hasil akan diisi oleh JavaScript -->
                     </tbody>
                 </table>
             </div>
             
-            <div class="pagination" id="pagination">
+            <div class="pagination" id="teacherPagination">
                 <!-- Pagination akan diisi oleh JavaScript -->
             </div>
             
-            <div class="no-results" id="noResults">
+            <div class="no-results" id="teacherNoResults">
                 <i class="fas fa-search"></i>
-                <p>Tidak ada data yang ditemukan</p>
+                <p>Tidak ada siswa yang ditemukan</p>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Mode Siswa -->
+    <main class="app-container" id="studentContainer">
+        <!-- Pencarian Siswa -->
+        <section class="search-card">
+            <div class="section-title">
+                <i class="fas fa-search"></i>
+                <h2>Cari Pembimbing & Penguji</h2>
+            </div>
+            
+            <form class="search-form" id="studentSearchForm">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-user-graduate"></i> Nama Saya (Siswa)
+                    </label>
+                    <input type="text" class="form-input" id="studentName" placeholder="Masukkan nama lengkap Anda..." autocomplete="off">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-sliders-h"></i> Tipe Pencarian
+                    </label>
+                    <select class="form-select" id="studentSearchType">
+                        <option value="contains">Mengandung</option>
+                        <option value="exact">Tepat</option>
+                        <option value="startsWith">Dimulai dengan</option>
+                    </select>
+                </div>
+                
+                <button type="button" class="search-button" id="studentSearchButton">
+                    <i class="fas fa-search"></i> Cari Data Saya
+                </button>
+            </form>
+        </section>
+        
+        <!-- Loader -->
+        <div class="loader" id="studentLoader">
+            <i class="fas fa-spinner"></i>
+            <p>Mencari data pembimbing & penguji...</p>
+        </div>
+        
+        <!-- Hasil Pencarian Siswa -->
+        <section class="results-card" id="studentResultsCard">
+            <div class="results-header">
+                <div class="results-count" id="studentResultsCount">Data ditemukan</div>
+            </div>
+            
+            <div class="student-info-card" style="
+                background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+                border-radius: var(--radius-sm);
+                padding: 20px;
+                margin-bottom: 20px;
+            ">
+                <div style="margin-bottom: 15px;">
+                    <div style="font-size: 0.85rem; color: #666; margin-bottom: 5px;">Nama Siswa</div>
+                    <div style="font-size: 1.1rem; font-weight: 700; color: var(--primary);" id="studentFoundName"></div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <div style="font-size: 0.85rem; color: #666; margin-bottom: 5px;">Pembimbing</div>
+                        <div style="font-size: 1rem; font-weight: 600; color: var(--dark);" id="studentMentor"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.85rem; color: #666; margin-bottom: 5px;">Penguji</div>
+                        <div style="font-size: 1rem; font-weight: 600; color: var(--dark);" id="studentExaminer"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <div class="section-title">
+                    <i class="fas fa-users"></i>
+                    <h2>Siswa Lain dengan Pembimbing/Penguji Sama</h2>
+                </div>
+                
+                <div class="results-table">
+                    <table id="studentResultsTable">
+                        <thead>
+                            <tr>
+                                <th>NO</th>
+                                <th>NAMA SISWA</th>
+                                <th>PEMBIMBING</th>
+                                <th>PENGUJI</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentResultsBody">
+                            <!-- Hasil akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="pagination" id="studentPagination">
+                    <!-- Pagination akan diisi oleh JavaScript -->
+                </div>
+            </div>
+            
+            <div class="no-results" id="studentNoResults">
+                <i class="fas fa-search"></i>
+                <p>Data tidak ditemukan. Periksa nama Anda.</p>
             </div>
         </section>
     </main>
     
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <div class="nav-item active">
+        <div class="nav-item active" id="navSearch">
             <div class="nav-icon">
                 <i class="fas fa-search"></i>
             </div>
             <div class="nav-label">Cari</div>
         </div>
-        <div class="nav-item">
+        <div class="nav-item" id="navSwitch">
+            <div class="nav-icon">
+                <i class="fas fa-exchange-alt"></i>
+            </div>
+            <div class="nav-label">Ganti Mode</div>
+        </div>
+        <div class="nav-item" id="navInfo">
             <div class="nav-icon">
                 <i class="fas fa-info-circle"></i>
             </div>
             <div class="nav-label">Info</div>
-        </div>
-        <div class="nav-item">
-            <div class="nav-icon">
-                <i class="fas fa-cog"></i>
-            </div>
-            <div class="nav-label">Pengaturan</div>
         </div>
     </nav>
     
@@ -1126,20 +1330,19 @@
             { no: 419, nama: "ZUWAIDATUL HUSNA", pembimbing: "", penguji: "" }
         ];
 
+
         // Fungsi untuk mengisi data yang kosong dengan nilai dari baris sebelumnya
         function fillMissingData(data) {
             let lastPembimbing = "";
             let lastPenguji = "";
             
             return data.map(item => {
-                // Jika pembimbing kosong, gunakan nilai dari baris sebelumnya
                 if (item.pembimbing && item.pembimbing.trim() !== "") {
                     lastPembimbing = item.pembimbing;
                 } else if (item.pembimbing === "") {
                     item.pembimbing = lastPembimbing;
                 }
                 
-                // Jika penguji kosong, gunakan nilai dari baris sebelumnya
                 if (item.penguji && item.penguji.trim() !== "") {
                     lastPenguji = item.penguji;
                 } else if (item.penguji === "") {
@@ -1155,27 +1358,20 @@
         let mentors = new Set();
         let examiners = new Set();
         
-        // Elemen DOM
-        const categorySelect = document.getElementById('category');
-        const nameInput = document.getElementById('name');
-        const searchTypeSelect = document.getElementById('searchType');
-        const searchButton = document.getElementById('searchButton');
-        const resultsCard = document.getElementById('resultsCard');
-        const resultsBody = document.getElementById('resultsBody');
-        const resultsCount = document.getElementById('resultsCount');
-        const noResults = document.getElementById('noResults');
-        const loader = document.getElementById('loader');
-        const studentCount = document.getElementById('studentCount');
-        const mentorCount = document.getElementById('mentorCount');
-        const examinerCount = document.getElementById('examinerCount');
-        const exportButton = document.getElementById('exportButton');
-        const pagination = document.getElementById('pagination');
-        const successAlert = document.getElementById('successAlert');
-        
-        // Variabel untuk pagination
-        let currentPage = 1;
+        // Variabel global
+        let currentMode = 'teacher';
+        let teacherCurrentPage = 1;
+        let studentCurrentPage = 1;
         const resultsPerPage = 10;
-        let currentResults = [];
+        let teacherCurrentResults = [];
+        let studentCurrentResults = [];
+        
+        // Elemen DOM
+        const teacherModeCard = document.getElementById('teacherMode');
+        const studentModeCard = document.getElementById('studentMode');
+        const teacherContainer = document.getElementById('teacherContainer');
+        const studentContainer = document.getElementById('studentContainer');
+        const navSwitch = document.getElementById('navSwitch');
         
         // Fungsi untuk menginisialisasi data
         function initializeData() {
@@ -1191,34 +1387,27 @@
             });
             
             // Update statistik
-            studentCount.textContent = studentsData.length;
-            mentorCount.textContent = mentors.size;
-            examinerCount.textContent = examiners.size;
+            document.getElementById('studentCount').textContent = studentsData.length;
+            document.getElementById('mentorCount').textContent = mentors.size;
+            document.getElementById('examinerCount').textContent = examiners.size;
             
-            // Isi autocomplete untuk nama
-            populateNameAutocomplete();
+            // Isi autocomplete untuk mode guru
+            populateTeacherAutocomplete();
             
-            // Tampilkan alert sukses
-            setTimeout(() => {
-                successAlert.style.display = 'none';
-            }, 4000);
+            // Isi autocomplete untuk mode siswa
+            populateStudentAutocomplete();
         }
         
-        // Fungsi untuk mengisi autocomplete nama
-        function populateNameAutocomplete() {
-            // Gabungkan semua nama mentor dan examiner
+        // Fungsi untuk mengisi autocomplete mode guru
+        function populateTeacherAutocomplete() {
             const allNames = [...mentors, ...examiners].sort();
-            
-            // Buat datalist untuk autocomplete
-            let datalist = document.getElementById('nameDatalist');
+            let datalist = document.getElementById('teacherNameDatalist');
             if (!datalist) {
                 datalist = document.createElement('datalist');
-                datalist.id = 'nameDatalist';
+                datalist.id = 'teacherNameDatalist';
                 document.body.appendChild(datalist);
-                nameInput.setAttribute('list', 'nameDatalist');
+                document.getElementById('teacherName').setAttribute('list', 'teacherNameDatalist');
             }
-            
-            // Kosongkan dan isi ulang
             datalist.innerHTML = '';
             allNames.forEach(name => {
                 const option = document.createElement('option');
@@ -1227,42 +1416,86 @@
             });
         }
         
-        // Fungsi untuk melakukan pencarian
-        function performSearch() {
-            const category = categorySelect.value;
-            const name = nameInput.value.trim();
-            const searchType = searchTypeSelect.value;
+        // Fungsi untuk mengisi autocomplete mode siswa
+        function populateStudentAutocomplete() {
+            const studentNames = studentsData.map(s => s.nama).sort();
+            let datalist = document.getElementById('studentNameDatalist');
+            if (!datalist) {
+                datalist = document.createElement('datalist');
+                datalist.id = 'studentNameDatalist';
+                document.body.appendChild(datalist);
+                document.getElementById('studentName').setAttribute('list', 'studentNameDatalist');
+            }
+            datalist.innerHTML = '';
+            studentNames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                datalist.appendChild(option);
+            });
+        }
+        
+        // Fungsi untuk mengganti mode
+        function switchMode(mode) {
+            currentMode = mode;
+            
+            // Update tampilan kartu mode
+            teacherModeCard.classList.toggle('active', mode === 'teacher');
+            studentModeCard.classList.toggle('active', mode === 'student');
+            
+            // Update kontainer
+            teacherContainer.classList.toggle('active', mode === 'teacher');
+            studentContainer.classList.toggle('active', mode === 'student');
+            
+            // Update judul header
+            const headerSubtitle = document.querySelector('.app-subtitle');
+            if (mode === 'teacher') {
+                headerSubtitle.textContent = 'Cari siswa yang Anda bimbing/uji';
+            } else {
+                headerSubtitle.textContent = 'Cari pembimbing & penguji Anda';
+            }
+            
+            // Reset pencarian
+            if (mode === 'teacher') {
+                document.getElementById('teacherName').value = '';
+                document.getElementById('teacherResultsCard').style.display = 'none';
+            } else {
+                document.getElementById('studentName').value = '';
+                document.getElementById('studentResultsCard').style.display = 'none';
+            }
+            
+            showToast(`Mode ${mode === 'teacher' ? 'Guru' : 'Siswa'} aktif`);
+        }
+        
+        // ===== MODE GURU =====
+        function performTeacherSearch() {
+            const category = document.getElementById('teacherCategory').value;
+            const name = document.getElementById('teacherName').value.trim();
+            const searchType = document.getElementById('teacherSearchType').value;
             
             if (!name) {
-                showToast("Masukkan nama untuk dicari");
+                showToast("Masukkan nama Anda sebagai guru");
                 return;
             }
             
-            // Tampilkan loader
-            loader.style.display = 'block';
-            resultsCard.style.display = 'none';
+            document.getElementById('teacherLoader').style.display = 'block';
+            document.getElementById('teacherResultsCard').style.display = 'none';
             
-            // Simulasi proses pencarian (untuk memberikan efek loading)
             setTimeout(() => {
-                const results = searchData(category, name, searchType);
-                displayResults(results, category, name);
-                loader.style.display = 'none';
-                resultsCard.style.display = 'block';
-                
-                // Scroll ke hasil
-                resultsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const results = searchTeacherData(category, name, searchType);
+                displayTeacherResults(results, category, name);
+                document.getElementById('teacherLoader').style.display = 'none';
+                document.getElementById('teacherResultsCard').style.display = 'block';
+                document.getElementById('teacherResultsCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 300);
         }
         
-        // Fungsi untuk mencari data
-        function searchData(category, name, searchType) {
+        function searchTeacherData(category, name, searchType) {
             const results = [];
             
             studentsData.forEach(student => {
                 let match = false;
                 
                 if (category === 'keduanya') {
-                    // Cari di kedua kolom
                     const matchPembimbing = checkMatch(student.pembimbing, name, searchType);
                     const matchPenguji = checkMatch(student.penguji, name, searchType);
                     match = matchPembimbing || matchPenguji;
@@ -1284,7 +1517,277 @@
             return results;
         }
         
-        // Fungsi untuk memeriksa kecocokan berdasarkan tipe pencarian
+        function displayTeacherResults(results, category, searchName) {
+            teacherCurrentResults = results;
+            teacherCurrentPage = 1;
+            
+            document.getElementById('teacherResultsCount').textContent = `${results.length} siswa ditemukan`;
+            
+            if (results.length === 0) {
+                document.getElementById('teacherNoResults').style.display = 'block';
+                document.getElementById('teacherResultsBody').innerHTML = '';
+                document.getElementById('teacherPagination').innerHTML = '';
+                document.getElementById('teacherExportButton').style.display = 'none';
+                showToast("Tidak ada siswa yang ditemukan");
+                return;
+            }
+            
+            document.getElementById('teacherNoResults').style.display = 'none';
+            document.getElementById('teacherExportButton').style.display = 'flex';
+            
+            displayTeacherPage(teacherCurrentPage);
+            setupTeacherPagination(results.length);
+            
+            showToast(`${results.length} siswa ditemukan`);
+        }
+        
+        function displayTeacherPage(page) {
+            const startIndex = (page - 1) * resultsPerPage;
+            const endIndex = Math.min(startIndex + resultsPerPage, teacherCurrentResults.length);
+            const pageResults = teacherCurrentResults.slice(startIndex, endIndex);
+            
+            const resultsBody = document.getElementById('teacherResultsBody');
+            resultsBody.innerHTML = '';
+            
+            pageResults.forEach((student, index) => {
+                const row = document.createElement('tr');
+                const globalIndex = startIndex + index + 1;
+                
+                let pembimbingCell = student.pembimbing;
+                let pengujiCell = student.penguji;
+                const searchName = document.getElementById('teacherName').value.trim().toLowerCase();
+                
+                if (student.pembimbing && student.pembimbing.toLowerCase().includes(searchName)) {
+                    pembimbingCell = highlightText(student.pembimbing, document.getElementById('teacherName').value.trim());
+                }
+                
+                if (student.penguji && student.penguji.toLowerCase().includes(searchName)) {
+                    pengujiCell = highlightText(student.penguji, document.getElementById('teacherName').value.trim());
+                }
+                
+                row.innerHTML = `
+                    <td>${student.no}</td>
+                    <td>${student.nama}</td>
+                    <td>${pembimbingCell}</td>
+                    <td>${pengujiCell}</td>
+                    <td><span class="role-badge ${student.role === 'pembimbing' ? 'pembimbing-badge' : 'penguji-badge'}">${student.role === 'pembimbing' ? 'B' : 'U'}</span></td>
+                `;
+                
+                resultsBody.appendChild(row);
+            });
+        }
+        
+        function setupTeacherPagination(totalResults) {
+            const totalPages = Math.ceil(totalResults / resultsPerPage);
+            const pagination = document.getElementById('teacherPagination');
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '';
+            paginationHTML += `<button class="page-button" id="teacherPrevPage" ${teacherCurrentPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+            
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, teacherCurrentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `<button class="page-button ${i === teacherCurrentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+            }
+            
+            paginationHTML += `<button class="page-button" id="teacherNextPage" ${teacherCurrentPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+            
+            pagination.innerHTML = paginationHTML;
+            
+            document.getElementById('teacherPrevPage')?.addEventListener('click', () => {
+                if (teacherCurrentPage > 1) {
+                    teacherCurrentPage--;
+                    displayTeacherPage(teacherCurrentPage);
+                    setupTeacherPagination(totalResults);
+                }
+            });
+            
+            document.getElementById('teacherNextPage')?.addEventListener('click', () => {
+                if (teacherCurrentPage < totalPages) {
+                    teacherCurrentPage++;
+                    displayTeacherPage(teacherCurrentPage);
+                    setupTeacherPagination(totalResults);
+                }
+            });
+            
+            document.querySelectorAll('#teacherPagination .page-button[data-page]').forEach(button => {
+                button.addEventListener('click', () => {
+                    teacherCurrentPage = parseInt(button.getAttribute('data-page'));
+                    displayTeacherPage(teacherCurrentPage);
+                    setupTeacherPagination(totalResults);
+                });
+            });
+        }
+        
+        // ===== MODE SISWA =====
+        function performStudentSearch() {
+            const name = document.getElementById('studentName').value.trim();
+            const searchType = document.getElementById('studentSearchType').value;
+            
+            if (!name) {
+                showToast("Masukkan nama Anda sebagai siswa");
+                return;
+            }
+            
+            document.getElementById('studentLoader').style.display = 'block';
+            document.getElementById('studentResultsCard').style.display = 'none';
+            
+            setTimeout(() => {
+                const result = searchStudentData(name, searchType);
+                displayStudentResults(result, name);
+                document.getElementById('studentLoader').style.display = 'none';
+                document.getElementById('studentResultsCard').style.display = 'block';
+                document.getElementById('studentResultsCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 300);
+        }
+        
+        function searchStudentData(name, searchType) {
+            // Cari siswa berdasarkan nama
+            const student = studentsData.find(s => checkMatch(s.nama, name, searchType));
+            
+            if (!student) return null;
+            
+            // Cari siswa lain dengan pembimbing/penguji yang sama
+            const sameMentorStudents = studentsData.filter(s => 
+                s.pembimbing === student.pembimbing && s.no !== student.no
+            );
+            
+            const sameExaminerStudents = studentsData.filter(s => 
+                s.penguji === student.penguji && s.no !== student.no
+            );
+            
+            // Gabungkan dan hilangkan duplikat
+            const allRelatedStudents = [...sameMentorStudents, ...sameExaminerStudents];
+            const uniqueStudents = allRelatedStudents.filter((student, index, self) =>
+                index === self.findIndex(s => s.no === student.no)
+            );
+            
+            return {
+                student,
+                relatedStudents: uniqueStudents
+            };
+        }
+        
+        function displayStudentResults(result, searchName) {
+            if (!result) {
+                document.getElementById('studentNoResults').style.display = 'block';
+                document.getElementById('studentResultsBody').innerHTML = '';
+                document.getElementById('studentPagination').innerHTML = '';
+                showToast("Data siswa tidak ditemukan");
+                return;
+            }
+            
+            const { student, relatedStudents } = result;
+            studentCurrentResults = relatedStudents;
+            studentCurrentPage = 1;
+            
+            document.getElementById('studentNoResults').style.display = 'none';
+            document.getElementById('studentResultsCount').textContent = 'Data ditemukan';
+            document.getElementById('studentFoundName').textContent = student.nama;
+            document.getElementById('studentMentor').textContent = student.pembimbing || '-';
+            document.getElementById('studentExaminer').textContent = student.penguji || '-';
+            
+            if (relatedStudents.length === 0) {
+                document.getElementById('studentResultsBody').innerHTML = '';
+                document.getElementById('studentPagination').innerHTML = '';
+                showToast("Data ditemukan. Tidak ada siswa lain dengan pembimbing/penguji sama.");
+                return;
+            }
+            
+            displayStudentPage(studentCurrentPage);
+            setupStudentPagination(relatedStudents.length);
+            
+            showToast(`Data ditemukan. ${relatedStudents.length} siswa lain dengan pembimbing/penguji sama.`);
+        }
+        
+        function displayStudentPage(page) {
+            const startIndex = (page - 1) * resultsPerPage;
+            const endIndex = Math.min(startIndex + resultsPerPage, studentCurrentResults.length);
+            const pageResults = studentCurrentResults.slice(startIndex, endIndex);
+            
+            const resultsBody = document.getElementById('studentResultsBody');
+            resultsBody.innerHTML = '';
+            
+            pageResults.forEach((student, index) => {
+                const row = document.createElement('tr');
+                const globalIndex = startIndex + index + 1;
+                
+                row.innerHTML = `
+                    <td>${globalIndex}</td>
+                    <td>${student.nama}</td>
+                    <td>${student.pembimbing || '-'}</td>
+                    <td>${student.penguji || '-'}</td>
+                `;
+                
+                resultsBody.appendChild(row);
+            });
+        }
+        
+        function setupStudentPagination(totalResults) {
+            const totalPages = Math.ceil(totalResults / resultsPerPage);
+            const pagination = document.getElementById('studentPagination');
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '';
+            paginationHTML += `<button class="page-button" id="studentPrevPage" ${studentCurrentPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+            
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, studentCurrentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `<button class="page-button ${i === studentCurrentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+            }
+            
+            paginationHTML += `<button class="page-button" id="studentNextPage" ${studentCurrentPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+            
+            pagination.innerHTML = paginationHTML;
+            
+            document.getElementById('studentPrevPage')?.addEventListener('click', () => {
+                if (studentCurrentPage > 1) {
+                    studentCurrentPage--;
+                    displayStudentPage(studentCurrentPage);
+                    setupStudentPagination(totalResults);
+                }
+            });
+            
+            document.getElementById('studentNextPage')?.addEventListener('click', () => {
+                if (studentCurrentPage < totalPages) {
+                    studentCurrentPage++;
+                    displayStudentPage(studentCurrentPage);
+                    setupStudentPagination(totalResults);
+                }
+            });
+            
+            document.querySelectorAll('#studentPagination .page-button[data-page]').forEach(button => {
+                button.addEventListener('click', () => {
+                    studentCurrentPage = parseInt(button.getAttribute('data-page'));
+                    displayStudentPage(studentCurrentPage);
+                    setupStudentPagination(totalResults);
+                });
+            });
+        }
+        
+        // ===== FUNGSI UMUM =====
         function checkMatch(text, searchTerm, searchType) {
             if (!text || text.trim() === '') return false;
             
@@ -1303,189 +1806,16 @@
             }
         }
         
-        // Fungsi untuk menampilkan hasil pencarian
-        function displayResults(results, category, searchName) {
-            currentResults = results;
-            currentPage = 1;
-            
-            // Update jumlah hasil
-            resultsCount.textContent = `${results.length} hasil`;
-            
-            if (results.length === 0) {
-                noResults.style.display = 'block';
-                resultsBody.innerHTML = '';
-                pagination.innerHTML = '';
-                exportButton.style.display = 'none';
-                showToast("Tidak ada data yang ditemukan");
-                return;
-            }
-            
-            noResults.style.display = 'none';
-            exportButton.style.display = 'flex';
-            
-            // Tampilkan hasil dengan pagination
-            displayPage(currentPage);
-            setupPagination(results.length);
-            
-            // Tampilkan toast sukses
-            showToast(`${results.length} data ditemukan`);
-        }
-        
-        // Fungsi untuk menampilkan halaman tertentu
-        function displayPage(page) {
-            const startIndex = (page - 1) * resultsPerPage;
-            const endIndex = Math.min(startIndex + resultsPerPage, currentResults.length);
-            const pageResults = currentResults.slice(startIndex, endIndex);
-            
-            // Kosongkan tabel
-            resultsBody.innerHTML = '';
-            
-            // Isi tabel dengan hasil
-            pageResults.forEach((student, index) => {
-                const row = document.createElement('tr');
-                const globalIndex = startIndex + index + 1;
-                
-                // Highlight nama yang dicari
-                let pembimbingCell = student.pembimbing;
-                let pengujiCell = student.penguji;
-                const searchName = nameInput.value.trim().toLowerCase();
-                
-                if (student.pembimbing && student.pembimbing.toLowerCase().includes(searchName)) {
-                    pembimbingCell = highlightText(student.pembimbing, nameInput.value.trim());
-                }
-                
-                if (student.penguji && student.penguji.toLowerCase().includes(searchName)) {
-                    pengujiCell = highlightText(student.penguji, nameInput.value.trim());
-                }
-                
-                row.innerHTML = `
-                    <td>${student.no}</td>
-                    <td>${student.nama}</td>
-                    <td>${pembimbingCell}</td>
-                    <td>${pengujiCell}</td>
-                    <td><span class="role-badge ${student.role === 'pembimbing' ? 'pembimbing-badge' : 'penguji-badge'}">${student.role === 'pembimbing' ? 'B' : 'U'}</span></td>
-                `;
-                
-                resultsBody.appendChild(row);
-            });
-        }
-        
-        // Fungsi untuk menyorot teks yang cocok
         function highlightText(text, searchTerm) {
             if (!searchTerm || !text) return text;
-            
             const regex = new RegExp(`(${searchTerm})`, 'gi');
             return text.replace(regex, '<span class="highlight">$1</span>');
         }
         
-        // Fungsi untuk setup pagination
-        function setupPagination(totalResults) {
-            const totalPages = Math.ceil(totalResults / resultsPerPage);
-            
-            if (totalPages <= 1) {
-                pagination.innerHTML = '';
-                return;
-            }
-            
-            let paginationHTML = '';
-            
-            // Tombol sebelumnya
-            paginationHTML += `<button class="page-button" id="prevPage" ${currentPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
-            
-            // Tombol halaman
-            const maxVisiblePages = 5;
-            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-            
-            if (endPage - startPage + 1 < maxVisiblePages) {
-                startPage = Math.max(1, endPage - maxVisiblePages + 1);
-            }
-            
-            for (let i = startPage; i <= endPage; i++) {
-                paginationHTML += `<button class="page-button ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
-            }
-            
-            // Tombol selanjutnya
-            paginationHTML += `<button class="page-button" id="nextPage" ${currentPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
-            
-            pagination.innerHTML = paginationHTML;
-            
-            // Tambahkan event listener untuk tombol pagination
-            document.getElementById('prevPage')?.addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    displayPage(currentPage);
-                    setupPagination(totalResults);
-                }
-            });
-            
-            document.getElementById('nextPage')?.addEventListener('click', () => {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    displayPage(currentPage);
-                    setupPagination(totalResults);
-                }
-            });
-            
-            document.querySelectorAll('.page-button[data-page]').forEach(button => {
-                button.addEventListener('click', () => {
-                    currentPage = parseInt(button.getAttribute('data-page'));
-                    displayPage(currentPage);
-                    setupPagination(totalResults);
-                });
-            });
-        }
-        
-        // Fungsi untuk mengekspor data
-        function exportToExcel() {
-            if (currentResults.length === 0) {
-                showToast("Tidak ada data untuk diekspor");
-                return;
-            }
-            
-            // Buat data untuk ekspor
-            const exportData = currentResults.map(result => ({
-                "NO.": result.no,
-                "NAMA SISWA": result.nama,
-                "PEMBIMBING": result.pembimbing,
-                "PENGUJI": result.penguji,
-                "PERAN": result.role === 'pembimbing' ? 'Pembimbing' : 'Penguji'
-            }));
-            
-            // Konversi ke CSV
-            const headers = ["NO.", "NAMA SISWA", "PEMBIMBING", "PENGUJI", "PERAN"];
-            const csvContent = [
-                headers.join(","),
-                ...exportData.map(row => 
-                    headers.map(header => `"${row[header] || ''}"`).join(",")
-                )
-            ].join("\n");
-            
-            // Buat blob dan download
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            
-            link.setAttribute("href", url);
-            link.setAttribute("download", `hasil_pencarian_${nameInput.value.trim() || 'data'}.csv`);
-            link.style.visibility = 'hidden';
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showToast("Data berhasil diekspor");
-        }
-        
-        // Fungsi untuk menampilkan toast notification
         function showToast(message) {
-            // Hapus toast sebelumnya jika ada
             const existingToast = document.querySelector('.toast');
-            if (existingToast) {
-                existingToast.remove();
-            }
+            if (existingToast) existingToast.remove();
             
-            // Buat elemen toast baru
             const toast = document.createElement('div');
             toast.className = 'toast';
             toast.innerHTML = `
@@ -1506,54 +1836,47 @@
                     ${message}
                 </div>
             `;
-            
             document.body.appendChild(toast);
             
-            // Hapus toast setelah 3 detik
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
+            setTimeout(() => toast.remove(), 3000);
         }
         
-        // Event Listeners
-        searchButton.addEventListener('click', performSearch);
-        exportButton.addEventListener('click', exportToExcel);
-        
-        // Tambahkan event listener untuk pencarian dengan tombol Enter
-        nameInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                performSearch();
-            }
-        });
-        
-        // Tambahkan event listener untuk bottom navigation
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function() {
-                // Hapus class active dari semua item
-                document.querySelectorAll('.nav-item').forEach(nav => {
-                    nav.classList.remove('active');
-                });
-                
-                // Tambah class active ke item yang diklik
-                this.classList.add('active');
-                
-                // Tampilkan halaman sesuai yang dipilih
-                const label = this.querySelector('.nav-label').textContent;
-                if (label === 'Info') {
-                    showToast("Fitur info akan segera hadir");
-                } else if (label === 'Pengaturan') {
-                    showToast("Fitur pengaturan akan segera hadir");
-                }
-            });
-        });
-        
-        // Inisialisasi data saat halaman dimuat
+        // ===== EVENT LISTENERS =====
         document.addEventListener('DOMContentLoaded', function() {
             initializeData();
             
-            // Beri contoh pencarian
-            nameInput.value = "EKO ERIYANTO";
-            categorySelect.value = "pembimbing";
+            // Event untuk pilihan mode
+            teacherModeCard.addEventListener('click', () => switchMode('teacher'));
+            studentModeCard.addEventListener('click', () => switchMode('student'));
+            navSwitch.addEventListener('click', () => switchMode(currentMode === 'teacher' ? 'student' : 'teacher'));
+            
+            // Event untuk pencarian guru
+            document.getElementById('teacherSearchButton').addEventListener('click', performTeacherSearch);
+            document.getElementById('teacherName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') performTeacherSearch();
+            });
+            
+            // Event untuk pencarian siswa
+            document.getElementById('studentSearchButton').addEventListener('click', performStudentSearch);
+            document.getElementById('studentName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') performStudentSearch();
+            });
+            
+            // Event untuk bottom navigation
+            document.getElementById('navSearch').addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                document.getElementById('navSearch').classList.add('active');
+            });
+            
+            document.getElementById('navInfo').addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                document.getElementById('navInfo').classList.add('active');
+                showToast("Aplikasi Pencarian Pembimbing & Penguji v1.0");
+            });
+            
+            // Tambahkan contoh data
+            document.getElementById('teacherName').value = "EKO ERIYANTO";
+            document.getElementById('studentName').value = "AGHNIA RAISA NAZAFARIN";
             
             // Tambahkan style untuk animasi toast
             const style = document.createElement('style');
